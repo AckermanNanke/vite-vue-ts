@@ -11,7 +11,7 @@ export type resType = {
   total: number;
 };
 export function getMessageNumber(
-  data?: reqType
+  data: reqType
 ): Promise<AxiosResponse<resType>> {
   return Request.instance.post<resType, AxiosResponse<resType>, reqType>(
     "getmessagenumber",

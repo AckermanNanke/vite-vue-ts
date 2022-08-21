@@ -1,9 +1,16 @@
 import Mock from "mockjs";
-const url = "/api/getuserinfo";
-export const getUserInfo = Mock.mock(url, {
-  apiUrl: url,
-  userID: "@uuid",
-  name: "@cname",
-  address: "@county(true)",
-  certID: "@id",
-});
+export const getUserInfo = {
+  url: "/api/getuserinfo",
+  response: () => {
+    return {
+      code: 200,
+      message: "ok",
+      data: Mock.mock({
+        userID: "@uuid",
+        name: "@cname",
+        address: "@county(true)",
+        certID: "@id",
+      }),
+    };
+  },
+};

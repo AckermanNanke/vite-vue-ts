@@ -10,7 +10,7 @@ export type resType = {
    */
   username: string;
 };
-export function getUserInfo(data?: reqType): Promise<AxiosResponse<resType>> {
+export function getUserInfo(data: reqType): Promise<AxiosResponse<resType>> {
   return Request.instance.post<resType, AxiosResponse<resType>, reqType>(
     "getuserinfo",
     data

@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
+import MOCK from "../mock";
 export class Request {
   // 请求列表
   public requestList: Array<AxiosInstance> = [];
@@ -61,6 +62,7 @@ export class Request {
            * 不存在返回值的情况下
            */
           Request.errorHandler(error);
+          // return Promise.resolve(error);
           return Promise.reject("请求失败，请稍后再试");
         }
       }
@@ -68,6 +70,10 @@ export class Request {
   }
   // 常用错误码处理
   private static errorHandler(error: AxiosResponse) {
+    console.log("error");
+    console.log(error);
+    console.log("error");
+    let key = error.config.url;
     switch (error.status) {
       case 404:
         break;

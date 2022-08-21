@@ -1,4 +1,13 @@
 import Mock from "mockjs";
-export const getHotKeyword = Mock.mock("/api/getkeyword", {
-  "list|10": ["@ctitle"],
-});
+export const getHotKeyword = {
+  url: "/api/gethotkeyword",
+  response: () => {
+    return {
+      code: 200,
+      message: "ok",
+      data: Mock.mock({
+        "list|10": ["@ctitle"],
+      }),
+    };
+  },
+};

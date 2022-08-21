@@ -1,6 +1,13 @@
 import Mock from "mockjs";
-const url = "/api/getmessagenumber";
-export const getMessageNumber = Mock.mock(url, {
-  apiurl: url,
-  "total|0-99": 1,
-});
+export const getUserInfo = {
+  url: "/api/getmessagenumber",
+  response: () => {
+    return {
+      code: 200,
+      message: "ok",
+      data: Mock.mock({
+        "total|0-99": 1,
+      }),
+    };
+  },
+};

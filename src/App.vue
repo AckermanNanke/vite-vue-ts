@@ -2,6 +2,13 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from "./components/HelloWorld.vue";
+import { getUserInfo } from "@api/getUserInfo";
+import { getHotKeyword } from "@api/getHotKeyword";
+
+getUserInfo({
+  userID: "23234swrfwerwerfsf",
+});
+getHotKeyword();
 </script>
 
 <template>
@@ -15,5 +22,4 @@ import HelloWorld from "./components/HelloWorld.vue";
   </div>
   <HelloWorld msg="Vite + Vue" />
 </template>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

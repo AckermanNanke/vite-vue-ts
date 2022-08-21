@@ -11,7 +11,7 @@ export type resType = {
 };
 export function getHotKeyword(data?: reqType): Promise<AxiosResponse<resType>> {
   return Request.instance.post<resType, AxiosResponse<resType>, reqType>(
-    "getkeyword",
+    "gethotkeyword",
     data
   );
 }
