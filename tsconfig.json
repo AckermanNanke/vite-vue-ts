@@ -14,7 +14,6 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
-      "/*": ["*"],
       "@config/*": ["src/config/*"],
       "@utils/*": ["src/utils/*"],
       "@api/*": ["src/api/*"]
