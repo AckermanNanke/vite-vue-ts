@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from "./components/HelloWorld.vue";
 import { getUserInfo } from "@api/getUserInfo";
 import { getHotKeyword } from "@api/getHotKeyword";
 
@@ -12,14 +9,11 @@ getHotKeyword();
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <!-- <keep-alive>
+      <router-view v-if="$route.meta.keepAlive" />
+    </keep-alive> -->
+  <router-view />
 </template>
-<style lang="less" scoped></style>
+<style lang="less">
+@import url("/src/assets/style/style.less");
+</style>
