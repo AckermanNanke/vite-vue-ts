@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { type } from "os";
-import { ref } from "vue";
+import { toLogin } from "@utils/utils";
+import { onMounted, ref } from "vue";
 
 type formModel = {
   accountNumber: string;
   password: string;
-  isRember: boolean;
+  isRemember: boolean;
 };
-
-defineProps<{ msg: string }>();
 
 const formModel = ref<formModel>({
   accountNumber: "",
   password: "",
-  isRember: false,
+  isRemember: false,
 });
 
 function onFinish(values: formModel) {
@@ -22,22 +20,34 @@ function onFinish(values: formModel) {
 function onFinishFailed({ values }) {
   console.log(values);
 }
+function aaa() {
+  return toLogin(formModel.value);
+}
+onMounted(() => {
+  aaa()
+    .then((res) => {
+      console.log(res, 222222222222);
+    })
+    .catch((err) => {
+      console.log(err, 333333333333);
+    });
+});
 </script>
 
 <template>
   <div id="login" class="login">
     <section class="login-body position-fixed-center box-shadow border-radius">
+      <div>
+        <h1>MOKE</h1>
+      </div>
       <a-form
         name="basic"
         :model="formModel"
-        :label-col="{ span: 8 }"
-        :wrapper-col="{ span: 16 }"
         autocomplete="off"
         @finish="onFinish"
         @finishFailed="onFinishFailed"
       >
         <a-form-item
-          label="Username"
           name="accountNumber"
           :rules="[{ required: true, message: 'Please input your username!' }]"
         >
@@ -45,21 +55,31 @@ function onFinishFailed({ values }) {
         </a-form-item>
 
         <a-form-item
-          label="Password"
           name="password"
           :rules="[{ required: true, message: 'Please input your password!' }]"
         >
           <a-input-password v-model:value="formModel.password" />
         </a-form-item>
 
-        <a-form-item name="isRember" :wrapper-col="{ offset: 8, span: 16 }">
-          <a-checkbox v-model:checked="formModel.isRember"
-            >是否记住密码</a-checkbox
-          >
+        <a-form-item>
+          <a-form-item name="remember" no-style>
+            <a-checkbox v-model:checked="formModel.isRemember"
+              >记住密码</a-checkbox
+            >
+          </a-form-item>
+          <a class="login-body-forgot" href="">忘记密码？</a>
         </a-form-item>
 
-        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-          <a-button type="primary" html-type="submit">Submit</a-button>
+        <a-form-item>
+          <a-button
+            type="primary"
+            shape="round"
+            size="large"
+            html-type="submit"
+            block
+            >登录</a-button
+          >
+          <a-button type="link" shape="round" size="large" block>注册</a-button>
         </a-form-item>
       </a-form>
     </section>
@@ -70,14 +90,24 @@ function onFinishFailed({ values }) {
 .login {
   height: 100vh;
   width: 100vw;
-  // background: linear-gradient(70deg, @theme-yello 40%, @black 40%);
-  background: @white;
+  background: linear-gradient(
+    70deg,
+    @black 30%,
+    #101010 30%,
+    #101010 50%,
+    @black 50%
+  );
+  // background: @white;
   &-body {
-    height: 80%;
+    box-sizing: border-box;
+    padding: 40px;
     width: 30%;
     // background: linear-gradient(70deg, @theme-yello 40%, @black 40%);
     // background: linear-gradient(70deg, #000 40%, #ff0 40%);
     background: @theme-yello;
+    &-forgot {
+      float: right;
+    }
   }
 }
 </style>

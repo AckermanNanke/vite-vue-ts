@@ -1,10 +1,13 @@
 /**
- * 作者：马玉万
- * 自定义封装全局缓存属性
- * 使用API
- * - window.localStorage
- * - window.sessionStorage
+ * Storage Version 0.0.1
+ *
+ * author：Nan
+ *
  * 枚举缓存类型，自封装缓存API
+ *
+ * @param { Storage } window.localStorage 持久化缓存
+ * @param { Storage } window.sessionStorage 会话级缓存
+ *
  */
 enum StorageType {
   L = "localStorage",
@@ -43,4 +46,4 @@ class freeStorage {
 const FLocal = new freeStorage(StorageType.L);
 const Fsession = new freeStorage(StorageType.S);
 
-export { FLocal, Fsession };
+export { FLocal, Fsession, freeStorage };

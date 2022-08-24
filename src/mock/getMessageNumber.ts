@@ -1,5 +1,5 @@
 import Mock from "mockjs";
-export const getUserInfo = {
+export const getMessageNumber = {
   url: "/api/getmessagenumber",
   response: () => {
     return {
