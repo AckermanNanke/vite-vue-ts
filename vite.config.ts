@@ -32,8 +32,8 @@ export default defineConfig(({ command, mode }) => {
     css: {
       preprocessorOptions: {
         less: {
+          javascriptEnabled: true,
           modifyVars: {
-            javascriptEnabled: true,
             hack: `true;@import "/src/assets/style/base.less"`,
           },
         },

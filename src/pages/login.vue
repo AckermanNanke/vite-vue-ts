@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { inject, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { $message, $sessionStorage } from "@utils/pluginKey";
+
 import { toLogin } from "@utils/utils";
-import { onMounted, ref } from "vue";
+
+const router = useRouter();
+const sessionStorage = inject($sessionStorage);
+const message = inject($message);
 
 type formModel = {
   accountNumber: string;
@@ -15,23 +22,24 @@ const formModel = ref<formModel>({
 });
 
 function onFinish(values: formModel) {
-  console.log(values, 123);
-}
-function onFinishFailed({ values }) {
-  console.log(values);
-}
-function aaa() {
-  return toLogin(formModel.value);
-}
-onMounted(() => {
-  aaa()
+  toLogin(values)
     .then((res) => {
-      console.log(res, 222222222222);
+      router.replace({
+        path: "/index",
+      });
     })
     .catch((err) => {
-      console.log(err, 333333333333);
+      message?.error({
+        content: "登陆失败",
+      });
     });
-});
+}
+function goRegister(): void {
+  // router.push({
+  //   path: "/register",
+  // });
+}
+onMounted(() => {});
 </script>
 
 <template>
@@ -45,20 +53,25 @@ onMounted(() => {
         :model="formModel"
         autocomplete="off"
         @finish="onFinish"
-        @finishFailed="onFinishFailed"
       >
         <a-form-item
           name="accountNumber"
-          :rules="[{ required: true, message: 'Please input your username!' }]"
+          :rules="[{ required: true, message: '请输入用户名' }]"
         >
-          <a-input v-model:value="formModel.accountNumber" />
+          <a-input
+            placeholder="请输入用户名"
+            v-model:value="formModel.accountNumber"
+          />
         </a-form-item>
 
         <a-form-item
           name="password"
-          :rules="[{ required: true, message: 'Please input your password!' }]"
+          :rules="[{ required: true, message: '请输入密码' }]"
         >
-          <a-input-password v-model:value="formModel.password" />
+          <a-input-password
+            placeholder="请输入密码"
+            v-model:value="formModel.password"
+          />
         </a-form-item>
 
         <a-form-item>
@@ -79,7 +92,14 @@ onMounted(() => {
             block
             >登录</a-button
           >
-          <a-button type="link" shape="round" size="large" block>注册</a-button>
+          <a-button
+            type="link"
+            shape="round"
+            size="large"
+            block
+            @click="goRegister"
+            >注册</a-button
+          >
         </a-form-item>
       </a-form>
     </section>

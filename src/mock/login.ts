@@ -6,10 +6,10 @@ export const login = {
       code: 200,
       message: "ok",
       data: Mock.mock({
-        userID: "@uuid",
-        userphone: "@cname",
-        userEmail: "@county(true)",
-        username: "@id",
+        userID: "@guid",
+        username: "马玉万",
+        userphone: "17663910224",
+        userEmail: "1178809645@qq.com",
       }),
     };
   },

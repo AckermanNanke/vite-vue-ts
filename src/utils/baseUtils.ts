@@ -24,19 +24,14 @@ class freeStorage {
   }
   get(key: string): unknown {
     let value = this.storage.getItem(key);
-    if (value === undefined) {
-      throw new Error("缓存中不存在此属性");
+    if (value === undefined || value === null) {
+      throw new Error(`缓存中不存在属性：${key}`);
     } else {
       return JSON.parse(String(value));
     }
   }
-  remove(key: string): unknown {
-    let value = this.storage.getItem(key);
-    if (value === undefined) {
-      throw new Error("缓存中不存在此属性");
-    } else {
-      return JSON.parse(String(value));
-    }
+  remove(key: string): void {
+    this.storage.removeItem(key);
   }
   clear(): void {
     this.storage.clear();

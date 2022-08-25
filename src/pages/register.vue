@@ -7,7 +7,7 @@ const count = ref(0);
 </script>
 
 <template>
-  <h1>主页</h1>
+  <h1>注册</h1>
 </template>
 
 <style scoped></style>
