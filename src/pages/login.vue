@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { $message, $sessionStorage } from "@utils/pluginKey";
 import { inject, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { $message, $sessionStorage } from "@utils/pluginKey";
 
 import { toLogin } from "@utils/utils";
 

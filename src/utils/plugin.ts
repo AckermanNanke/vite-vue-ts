@@ -1,15 +1,14 @@
-import { InjectionKey, readonly } from "vue";
 import {
-  $loacalStorage,
-  $sessionStorage,
   $http,
-  $Router,
+  $loacalStorage,
   $message,
+  $Router,
+  $sessionStorage
 } from "@utils/pluginKey";
-import { Router, useRouter } from "vue-router";
 import Request from "@utils/request";
-import { FLocal, freeStorage, Fsession } from "./baseUtils";
-import { AxiosInstance } from "axios";
+import { readonly } from "vue";
+import { useRouter } from "vue-router";
+import { FLocal, Fsession } from "./baseUtils";
 
 import { message } from "ant-design-vue";
 import "ant-design-vue/es/message/style/css"; //vite只能用 ant-design-vue/es 而非 ant-design-vue/lib
@@ -34,6 +33,10 @@ export default {
      * 提供全局路由使用方法
      */
     app.provide($Router, router);
+    /**
+     * ant-design 手动导入方法
+     * @param  { MessageApi } message  全局提示
+     */
     app.provide($message, message);
   },
 };
