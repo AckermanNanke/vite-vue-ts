@@ -2,18 +2,20 @@ import {
   $http,
   $loacalStorage,
   $message,
-  $Router,
+  $router,
   $sessionStorage
 } from "@utils/pluginKey";
 import Request from "@utils/request";
 import { readonly } from "vue";
-import { useRouter } from "vue-router";
+import router from "../router";
 import { FLocal, Fsession } from "./baseUtils";
 
+/**
+ * ant-design-vue
+ * 需手动导入方法
+ */
 import { message } from "ant-design-vue";
 import "ant-design-vue/es/message/style/css"; //vite只能用 ant-design-vue/es 而非 ant-design-vue/lib
-
-const router = useRouter();
 
 /**
  * 插件安装方法封装
@@ -32,11 +34,11 @@ export default {
     /**
      * 提供全局路由使用方法
      */
-    app.provide($Router, router);
+    app.provide($router, readonly(router));
     /**
      * ant-design 手动导入方法
      * @param  { MessageApi } message  全局提示
      */
-    app.provide($message, message);
+    app.provide($message, readonly(message));
   },
 };

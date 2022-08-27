@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { $message, $sessionStorage } from "@utils/pluginKey";
-import { inject, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-
+import { $message, $router, $sessionStorage } from "@utils/pluginKey";
 import { toLogin } from "@utils/utils";
+import { inject, onMounted, ref } from "vue";
 
-const router = useRouter();
 const sessionStorage = inject($sessionStorage);
 const message = inject($message);
+const router = inject($router);
 
 type formModel = {
   accountNumber: string;
@@ -24,7 +22,7 @@ const formModel = ref<formModel>({
 function onFinish(values: formModel) {
   toLogin(values)
     .then((res) => {
-      router.replace({
+      router?.replace({
         path: "/index",
       });
     })
@@ -35,9 +33,9 @@ function onFinish(values: formModel) {
     });
 }
 function goRegister(): void {
-  // router.push({
-  //   path: "/register",
-  // });
+  router?.push({
+    path: "/register",
+  });
 }
 onMounted(() => {});
 </script>
@@ -45,8 +43,8 @@ onMounted(() => {});
 <template>
   <div id="login" class="login">
     <section class="login-body position-fixed-center box-shadow border-radius">
-      <div>
-        <h1>MOKE</h1>
+      <div class="logo">
+        <a-avatar src="/src/assets/images/logo.jpg" :size="80" />
       </div>
       <a-form
         name="basic"
@@ -117,13 +115,15 @@ onMounted(() => {});
     #101010 50%,
     @black 50%
   );
-  // background: @white;
+  .logo {
+    margin: 0 auto 40px;
+    overflow: hidden;
+    text-align: center;
+  }
   &-body {
     box-sizing: border-box;
     padding: 40px;
     width: 30%;
-    // background: linear-gradient(70deg, @theme-yello 40%, @black 40%);
-    // background: linear-gradient(70deg, #000 40%, #ff0 40%);
     background: @theme-yello;
     &-forgot {
       float: right;
