@@ -1,18 +1,17 @@
 import Request from "@utils/request";
 import { AxiosResponse } from "axios";
 
-export type reqType = {
-  userID: string;
-};
 export type resType = {
   /**
    * 用户名
    */
   username: string;
 };
-export function getUserInfo(data: reqType): Promise<AxiosResponse<resType>> {
-  return Request.instance.post<resType, AxiosResponse<resType>, reqType>(
-    "getuserinfo",
-    data
-  );
+/**
+ * 获取用户信息
+ * @param data
+ * @returns
+ */
+export function getUserInfo(): Promise<AxiosResponse<never, resType>> {
+  return Request.instance.post<resType, AxiosResponse<never, resType>>("getuserinfo");
 }

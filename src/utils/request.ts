@@ -1,6 +1,12 @@
-import Axios from "axios";
-import { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
-import MOCK from "../mock";
+import { ACCESS_TOKEN } from "@config/data/globalConst";
+import { Fsession } from "@utils/baseUtils";
+import { notification } from "ant-design-vue";
+import Axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse
+} from "axios";
 export class Request {
   // 请求列表
   public requestList: Array<AxiosInstance> = [];
@@ -24,10 +30,23 @@ export class Request {
      */
     this.instance.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
+        console.log(config.url, "请求头开始=========sart");
+        console.log(config);
+        console.log("请求头结束=========end");
+        /**
+         * 如果缓存中有用户token则在请求头中添加
+         */
+        let accessToken = Fsession.get(ACCESS_TOKEN)
+        if (accessToken) {
+          config.headers = Object.assign({}, config.headers, {
+            [ACCESS_TOKEN]: accessToken
+          })
+        }
         return config;
       },
-      (error: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
+      (error: AxiosError): Promise<AxiosError> => {
         // 对请求错误做些什么
+        Request.errorHandler(error);
         return Promise.reject(error);
       }
     );
@@ -42,15 +61,15 @@ export class Request {
          */
         if (response.status === 200) {
           console.log(response.config.url, "返回数据接口=========sart");
-          console.log(response.data);
-          console.log(response.config.url, "返回数据接口=========end");
+          console.log(response);
+          console.log("返回数据接口=========end");
           return response;
         } else {
-          Request.errorHandler(response);
+          // Request.errorHandler(response);
           return Promise.reject(response);
         }
       },
-      (error: AxiosResponse): Promise<AxiosResponse> => {
+      (error: AxiosError): Promise<AxiosError> => {
         /**
          * 存在返回值的情况下
          */
@@ -69,16 +88,19 @@ export class Request {
     );
   }
   // 常用错误码处理
-  private static errorHandler(error: AxiosResponse) {
-    console.log("error");
+  private static errorHandler(error: AxiosError) {
+    console.log("错误信息================start");
     console.log(error);
-    console.log("error");
+    console.log("错误信息================end");
     let key = error.config.url;
-    switch (error.status) {
+    switch (error.response?.status) {
       case 404:
+        notification.error({
+          message: "接口不存在",
+        });
         break;
       default:
-        // const handleError: never = error;
+        // const handleError: never = error.status;
         // return handleError;
         break;
     }

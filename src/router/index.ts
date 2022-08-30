@@ -12,12 +12,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: "register",
     path: "/register",
-    component: () => import("/src/pages/register.vue"),
+    component: () => import("/src/pages/user/register.vue"),
   },
   {
     name: "login",
     path: "/login",
-    component: () => import("/src/pages/login.vue"),
+    component: () => import("/src/pages/user/login.vue"),
+  },
+  {
+    name: "reset-password",
+    path: "/reset-password",
+    component: () => import("/src/pages/user/reset-password.vue"),
   },
 ];
 const router = createRouter({

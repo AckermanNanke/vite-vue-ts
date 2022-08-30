@@ -1,18 +1,10 @@
-<script setup lang="ts">
-import { getUserInfo } from "@api/getUserInfo";
-import { getHotKeyword } from "@api/getHotKeyword";
-
-getUserInfo({
-  userID: "23234swrfwerwerfsf",
-});
-getHotKeyword();
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <!-- <keep-alive>
-      <router-view v-if="$route.meta.keepAlive" />
-    </keep-alive> -->
-  <router-view />
+  <keep-alive v-if="$route.meta.keepAlive">
+    <router-view />
+  </keep-alive>
+  <router-view v-else />
 </template>
 <style lang="less">
 @import url("/src/assets/style/style.less");

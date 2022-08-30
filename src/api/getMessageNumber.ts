@@ -2,6 +2,9 @@ import Request from "@utils/request";
 import { AxiosResponse } from "axios";
 
 export type reqType = {
+  /**
+   * 用户ID
+   */
   userID: string;
 };
 export type resType = {
@@ -10,11 +13,11 @@ export type resType = {
    */
   total: number;
 };
-export function getMessageNumber(
-  data: reqType
-): Promise<AxiosResponse<resType>> {
-  return Request.instance.post<resType, AxiosResponse<resType>, reqType>(
-    "getmessagenumber",
-    data
-  );
+/**
+ *
+ * @param { String } userID
+ * @returns { Promise }
+ */
+export function getMessageNumber(data: reqType): Promise<AxiosResponse<reqType, resType>> {
+  return Request.instance.post<resType, AxiosResponse<reqType, resType>, reqType>("getmessagenumber", data);
 }

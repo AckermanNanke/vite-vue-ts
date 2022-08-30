@@ -8,7 +8,9 @@ import plugin from "@utils/plugin";
 export const app = createApp(App);
 app.use(router).use(plugin).mount("#app");
 
-console.log("构建信息");
-console.log(import.meta.env);
-console.log(app);
-console.log("构建信息");
+if (!import.meta.env.PROD) {
+  console.log("构建信息");
+  console.log(import.meta.env);
+  console.log(app);
+  console.log("构建信息");
+}
