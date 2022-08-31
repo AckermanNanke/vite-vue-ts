@@ -108,8 +108,8 @@ onBeforeMount(() => {
                 message: '请输入密码',
               },
               {
-                pattern: new RegExp(/^[a-z0-9]{6,15}$/i),
-                message: '密码由6-15位数字字母组成',
+                pattern: new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])(.{6,15})$/),
+                message: '密码必须为6-15位，且包含数字、大小写字母',
               },
             ]"
           >
@@ -129,7 +129,7 @@ onBeforeMount(() => {
             <div class="login-body-forgot">
               <router-link to="/reset-password">忘记密码？</router-link>
               <span class="spacer">|</span>
-              <router-link to="/index">注册</router-link>
+              <router-link to="/register">注册</router-link>
             </div>
           </a-form-item>
 

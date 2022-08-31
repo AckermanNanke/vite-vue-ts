@@ -7,6 +7,8 @@ import Axios, {
   AxiosRequestConfig,
   AxiosResponse
 } from "axios";
+
+
 export class Request {
   // 请求列表
   public requestList: Array<AxiosInstance> = [];
@@ -30,7 +32,7 @@ export class Request {
      */
     this.instance.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
-        console.log(config.url, "请求头开始=========sart");
+        console.log("\n", config.url, "请求头开始=========sart");
         console.log(config);
         console.log("请求头结束=========end");
         /**

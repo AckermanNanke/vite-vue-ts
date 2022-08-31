@@ -25,9 +25,9 @@ class freeStorage {
   get(key: string): unknown {
     let value = this.storage.getItem(key);
     if (value === undefined || value === null) {
-      throw new Error(`缓存中不存在属性：${key}`);
+      console.error(`获取缓存属性错误，缓存中不存在属性：${key}`);
     } else {
-      return JSON.parse(String(value));
+      return JSON.parse(value as string);
     }
   }
   remove(key: string): void {
@@ -42,3 +42,4 @@ const FLocal = new freeStorage(StorageType.L);
 const Fsession = new freeStorage(StorageType.S);
 
 export { FLocal, Fsession, freeStorage };
+
