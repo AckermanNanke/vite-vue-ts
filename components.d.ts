@@ -23,6 +23,7 @@ declare module '@vue/runtime-core' {
     AListItem: typeof import('ant-design-vue/es')['ListItem']
     ARow: typeof import('ant-design-vue/es')['Row']
     ASpin: typeof import('ant-design-vue/es')['Spin']
+    Captcha: typeof import('./src/components/captcha.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
