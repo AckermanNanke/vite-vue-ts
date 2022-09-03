@@ -21,8 +21,8 @@ export type resType = {
  * @param { String } smsVerifiationCode
  * @returns { Promise }
  */
-export function register(data: reqType): Promise<AxiosResponse<reqType, resType>> {
-  return Request.instance.post<resType, AxiosResponse<reqType, resType>, reqType>(
+export function register(data: reqType) {
+  return Request.instance.post<resType, AxiosResponse<resType>, reqType>(
     "register",
     data
   );

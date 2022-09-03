@@ -18,6 +18,6 @@ export type resType = {
  * @param { String } userID
  * @returns { Promise }
  */
-export function getBankInfo(data: reqType): Promise<AxiosResponse<reqType, resType>> {
-  return Request.instance.post<resType, AxiosResponse<reqType, resType>, reqType>("getbankinfo", data);
+export function getBankInfo(data: reqType) {
+  return Request.instance.post<resType, AxiosResponse<resType>, reqType>("getbankinfo", data);
 }

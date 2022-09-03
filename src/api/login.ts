@@ -21,6 +21,6 @@ export type resType = {
  * @param { String } password
  * @returns { Promise }
  */
-export function login(data: reqType): Promise<AxiosResponse<reqType, resType>> {
-  return Request.instance.post<resType, AxiosResponse<reqType, resType>, reqType>("login", data);
+export function login(data: reqType) {
+  return Request.instance.post<resType, AxiosResponse<resType>, reqType>("login", data);
 }

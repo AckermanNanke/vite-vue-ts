@@ -13,6 +13,10 @@ export class Request {
   // 请求列表
   public requestList: Array<AxiosInstance> = [];
   public instance: AxiosInstance;
+
+  // static isLogin: boolean;
+  // static isShowError: boolean;
+  // public createRequest: (isLogin?: boolean, isShowError?: boolean) => AxiosInstance;
   constructor() {
     // 创建请求实例
     this.instance = Axios.create({
@@ -23,6 +27,24 @@ export class Request {
       timeout: 10000, //超时时间
     });
     this.interceptors();
+
+    // /**
+    //  * 二次封装请求体
+    //  * 接口是否需要在登陆状态下请求
+    //  * 是否需要展示全局自定义报错弹窗
+    //  * @param { boolean } isLogin
+    //  * @param { boolean } isShowError
+    //  * @return { AxiosInstance }
+    //  */
+    // this.createRequest = (isLogin = false, isShowError = false) => {
+    //   if (isLogin) {
+    //     Request.isLogin = isLogin
+    //   }
+    //   if (isShowError) {
+    //     Request.isShowError = isShowError
+    //   }
+    //   return this.instance
+    // }
   }
   // 拦截请求
   interceptors(): void {
@@ -32,9 +54,9 @@ export class Request {
      */
     this.instance.interceptors.request.use(
       (config: AxiosRequestConfig): AxiosRequestConfig => {
-        console.log("\n", config.url, "请求头开始=========sart");
-        console.log(config);
-        console.log("请求头结束=========end");
+        console.info("\n", config.url, "请求头开始=========sart");
+        console.info(config);
+        console.info("请求头结束=========end");
         /**
          * 如果缓存中有用户token则在请求头中添加
          */
@@ -62,9 +84,9 @@ export class Request {
          * 只有服务器状态码为200时返回成功
          */
         if (response.status === 200) {
-          console.log(response.config.url, "返回数据接口=========sart");
-          console.log(response);
-          console.log("返回数据接口=========end");
+          console.info((response.config.url, "返回数据接口=========sart"));
+          console.info(response);
+          console.info("返回数据接口=========end");
           return response;
         } else {
           // Request.errorHandler(response);
@@ -82,8 +104,6 @@ export class Request {
           /**
            * 不存在返回值的情况下
            */
-          Request.errorHandler(error);
-          // return Promise.resolve(error);
           return Promise.reject("请求失败，请稍后再试");
         }
       }
@@ -91,9 +111,9 @@ export class Request {
   }
   // 常用错误码处理
   private static errorHandler(error: AxiosError) {
-    console.log("错误信息================start");
-    console.log(error);
-    console.log("错误信息================end");
+    console.error("错误信息================start");
+    console.error(error);
+    console.error("错误信息================end");
     let key = error.config.url;
     switch (error.response?.status) {
       case 404:

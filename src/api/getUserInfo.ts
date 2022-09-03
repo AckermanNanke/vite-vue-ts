@@ -12,6 +12,6 @@ export type resType = {
  * @param data
  * @returns
  */
-export function getUserInfo(): Promise<AxiosResponse<never, resType>> {
-  return Request.instance.post<resType, AxiosResponse<never, resType>>("getuserinfo");
+export function getUserInfo() {
+  return Request.instance.post<resType, AxiosResponse<resType>>("getuserinfo");
 }

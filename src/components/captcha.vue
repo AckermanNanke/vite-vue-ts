@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { getCaptcha } from "@api/getCaptcha";
 import { onMounted, ref } from 'vue';
 
+/**
+ * 组件所需参数值
+ */
 const props = defineProps<{
+  phone: string //手机号
   captchaType: "dot" | "line"; //类型
-  captchaCode: string; //验证码
   width: number; //宽度
   height: number; //高度
   colorMax: number; //随即背景色最大值
@@ -16,14 +20,45 @@ const props = defineProps<{
 
 const startX = ref(0)//起始X位置
 const startY = ref(0)//起始Y位置
-const fontSizeMax = ref(props.height - 2)//字号最大值
-const fontSizeMin = ref(props.height - 6)//字号最小值
+const fontSizeMax = ref(props.height + 12)//字号最大值
+const fontSizeMin = ref(props.height)//字号最小值
+let captchaCode = ref<string>(""); //验证码
+
+// 抛出事件参数类型
+interface captchaParamsType {
+  captchaMessage?: string
+  captchaCode?: string
+  isGet: boolean
+}
+// 抛出事件类型
+const emit = defineEmits<{
+  (e: "click", data: captchaParamsType): void
+}>()
+
+// 获取图形验证码
+function toGetCaptcha() {
+  return getCaptcha({
+    phone: props.phone
+  }).then(res => {
+    captchaCode.value = res.data.captcha;
+    drawCaptcha()
+    emit("click", {
+      captchaCode: captchaCode.value,
+      isGet: true
+    })
+  }).catch(() => {
+    emit("click", {
+      captchaMessage: "图形验证码获取失败",
+      isGet: false
+    })
+  })
+}
+
 /**
  * 绘制图形验证码
  */
 function drawCaptcha() {
   let captchaCanvas = document.getElementById("captcha-canvas") as HTMLCanvasElement;
-  console.log(captchaCanvas);
   let ctx = captchaCanvas.getContext("2d") as CanvasRenderingContext2D;
   ctx.textBaseline = "bottom"; //下划线
   ctx.fillStyle = randomColor(props.backgroundMin, props.backgroundMax); //背景色
@@ -31,14 +66,15 @@ function drawCaptcha() {
   ctx.strokeRect(startX.value, startY.value, props.width, props.height); //绘制边框，X起点，Y起点，X终点，Y终点
 
   // 绘制文字
-  for (let i = 0; i < props.captchaCode.length; i++) {
-    drawText(ctx, props.captchaCode[i], i);
+  for (let i = 0; i < captchaCode.value.length; i++) {
+    drawText(ctx, captchaCode.value[i], i);
   }
 
   // 绘制干扰区域
   // 点状干扰
   if (props.captchaType === "dot") {
     drawDot(ctx);
+  } else {
     // 线状干扰
     drawLine(ctx);
   }
@@ -53,13 +89,13 @@ function drawText(
   word: string,
   i: number
 ): void {
-  // ctx.fillStyle = "#000000"; //字体色
-  ctx.fillStyle = randomColor(props.backgroundMin, props.backgroundMax); //背景色
+  ctx.fillStyle = "#000000"; //字体色
+  // ctx.fillStyle = randomColor(props.backgroundMin, props.backgroundMax); //背景色
   ctx.font = `${randomData(fontSizeMax.value, fontSizeMin.value)}px SimHei`; //字体大小
   ctx.textBaseline = "alphabetic"; //基线对齐
-  let x = i * (props.width / props.captchaCode.length);
-  let y = randomData(props.height - 8, props.height - 16);
-  let deg = randomData(-45, 45);
+  let x = i * (props.width / captchaCode.value.length);
+  let y = randomData(props.height - 4, props.height - 8);
+  let deg = randomData(-25, 25);
   ctx.save();//保存画布
   ctx.translate(x, y); //移动不同位置  参数偏移量
   ctx.rotate((deg * Math.PI) / 180); //旋转 参数角度
@@ -126,10 +162,10 @@ function randomColor(max: number, min: number, Alpha?: number): string {
 }
 
 onMounted(() => {
-  drawCaptcha()
+  toGetCaptcha()
 })
 </script>
 
 <template>
-  <canvas id="captcha-canvas" :width="width" :height="height"></canvas>
+  <canvas id="captcha-canvas" :width="width" :height="height" @click="toGetCaptcha"></canvas>
 </template>

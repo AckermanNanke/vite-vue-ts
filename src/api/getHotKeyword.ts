@@ -8,6 +8,6 @@ export type resType = {
    */
   list: Array<string>;
 };
-export function getHotKeyword(data?: reqType): Promise<AxiosResponse<reqType, resType>> {
-  return Request.instance.post<resType, AxiosResponse<reqType, resType>, reqType>("gethotkeyword", data);
+export function getHotKeyword(data?: reqType) {
+  return Request.instance.post<resType, AxiosResponse<resType>, reqType>("gethotkeyword", data);
 }
