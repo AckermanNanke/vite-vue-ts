@@ -23,6 +23,14 @@ const routes: Array<RouteRecordRaw> = [
     name: "reset-password",
     path: "/reset-password",
     component: () => import("/src/pages/user/reset-password.vue"),
+    children: [
+      {
+        name: "step1",
+        path: "step1",
+        component: () => import("/src/pages/user/components/reset-password-step1.vue"),
+
+      }
+    ]
   },
 ];
 const router = createRouter({
