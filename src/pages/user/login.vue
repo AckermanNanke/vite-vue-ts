@@ -104,7 +104,7 @@ onBeforeMount(() => {
               <a-checkbox v-model:checked="formModel.isRemember">记住密码</a-checkbox>
             </a-form-item>
             <div class="login-body-forgot">
-              <router-link to="/reset-password">忘记密码？</router-link>
+              <router-link :to="{name:'reset-password',params:{id: 1}}">忘记密码？</router-link>
               <span class="spacer">|</span>
               <router-link to="/register">注册</router-link>
             </div>

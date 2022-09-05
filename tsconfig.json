@@ -16,7 +16,8 @@
     "paths": {
       "@config/*": ["src/config/*"],
       "@utils/*": ["src/utils/*"],
-      "@api/*": ["src/api/*"]
+      "@api/*": ["src/api/*"],
+      "@components/*": ["src/components/*"]
     }
   },
   "include": [

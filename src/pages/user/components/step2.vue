@@ -23,11 +23,15 @@ function onFinish(values:any):void{
 
 }
 </script>
-
-<template>
+  
+  <template>
   <a-form name="step1" :model="formModel" validateTrigger="blur" @finish="onFinish">
     <a-form-item name="accountNumber" :rules="formRules.accountNumber">
       <a-input placeholder="请输入账号" v-model:value="formModel.accountNumber" :maxlength="32" />
+      <template #help>
+        账号为邮箱或者手机号
+      </template>
     </a-form-item>
   </a-form>
 </template>
+  

@@ -19,7 +19,7 @@ export default defineConfig(({ command, mode }) => {
         localEnabled: mode === "mock",
       }),
       Components({
-        resolvers: [AntDesignVueResolver()],
+        resolvers: [AntDesignVueResolver({ importStyle: "less" })], //定制主体需要importStyle不为 true 或者css
       }),
     ],
     resolve: {
@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode }) => {
         "@config": "/src/config",
         "@api": "/src/api",
         "@utils": "/src/utils",
+        "@components": "/src/components",
       },
     },
     css: {

@@ -111,9 +111,9 @@ function onFinish(values: typeof formModel.value) {
 </script>
 
 <template>
-  <a-spin size="large" :spinning="spinning">
-    <div id="register" class="register">
-      <section class="register-body position-fixed-center box-shadow border-radius">
+  <div id="register" class="register">
+    <section class="register-body position-fixed-center box-shadow border-radius">
+      <a-spin size="large" :spinning="spinning" tip="Loading...">
         <div class="logo">
           <a-avatar src="/src/assets/images/logo.jpg" :size="80" />
         </div>
@@ -161,9 +161,9 @@ function onFinish(values: typeof formModel.value) {
             <a-button type="primary" shape="round" size="large" html-type="submit" block>注册</a-button>
           </a-form-item>
         </a-form>
-      </section>
-    </div>
-  </a-spin>
+      </a-spin>
+    </section>
+  </div>
 </template>
 
 <style lang="less" scoped>
