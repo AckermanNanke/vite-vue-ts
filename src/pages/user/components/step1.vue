@@ -1,59 +1,76 @@
 <script setup lang="ts">
-import { verifyAccountNumber } from "@api/verifyAccountNumber";
 import { ref } from "vue";
 
 // 定义抛出事件类型
-const emit = defineEmits<{ (e: "next", acctNo?: string): void }>()
+const emits = defineEmits<{
+  (e: "next", type: string): void;
+}>();
+
+// 单选数据
+const radioArr = ref([
+  {
+    value: 1,
+    name: `通过邮箱找回`,
+  },
+  {
+    value: 2,
+    name: "通过手机号找回",
+  },
+]);
+
 // 表单数据
 interface formModelType {
-  accountNumber: string
+  retrieveType: number;
 }
-const formModel = ref<formModelType>({
-  accountNumber: "",
+const formModel = ref({
+  retrieveType: 1,
 });
 
 // 表单校验规则
 const formRules = {
-  accountNumber: [
-    { required: true, message: "账号不能为空" },
-    {
-      pattern: new RegExp(
-        /(^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$)|(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)/
-      ),
-      message: "请输入邮箱或者手机号",
-    },
-  ],
+  retrieveType: [{ required: true, message: "请选择找回方式" }],
 };
 
-/**
- * 表单提交
- * @param values 
- * 验证通过时抛出账号状态
- */
 function onFinish(values: formModelType): void {
-  verifyAccountNumber(values).then(() => {
-    emit("next", formModel.value.accountNumber)
-  }).catch(() => {
-    emit("next")
-  })
+  emits("next", String(formModel.value.retrieveType));
 }
 </script>
 
 <template>
   <div>
-    <p class="title">请输入注册邮箱或者手机号</p>
-    <p class="subTitle">注册账号为手机号或者邮箱</p>
+    <p class="title">我们需要验证您的身份</p>
+    <p class="subTitle">请选择找回方式</p>
   </div>
-  <a-form name="step1" :model="formModel" validateTrigger="blur" @finish="onFinish">
-    <a-form-item name="accountNumber" :rules="formRules.accountNumber">
-      <a-input placeholder="请输入账号" v-model:value="formModel.accountNumber" :maxlength="32" />
+  <a-form
+    name="step1"
+    :model="formModel"
+    validateTrigger="blur"
+    @finish="onFinish"
+  >
+    <a-form-item name="retrieveType" :rules="formRules.retrieveType">
+      <a-radio-group v-model:value="formModel.retrieveType">
+        <a-radio
+          v-for="item in radioArr"
+          :key="item.value"
+          :value="item.value"
+          :style="{ display: 'flex', lineHeight: '1.6rem' }"
+          >{{ item.name }}</a-radio
+        >
+      </a-radio-group>
     </a-form-item>
+
     <a-form-item>
-      <a-button type="primary" shape="round" size="large" block html-type="submit">继续</a-button>
+      <a-button
+        type="primary"
+        shape="round"
+        size="large"
+        block
+        html-type="submit"
+        >继续</a-button
+      >
     </a-form-item>
   </a-form>
 </template>
-
 <style lang="less" scoped>
 .title {
   font-size: 1.5rem;

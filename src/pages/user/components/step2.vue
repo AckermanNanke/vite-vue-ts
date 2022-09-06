@@ -1,74 +1,111 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { verifyAccountNumber } from "@api/verifyAccountNumber";
+import { onUpdated, ref } from "vue";
 
-const route = useRoute()
+// 组件接收参数
+const props = defineProps<{
+  retrieveType?: string; //找回类型
+}>();
 
-const urlOptions = ref({
-  accountNumber: ""
-})
-// 单选数据
-const radioArr = ref([
-  {
-    value: 1,
-    name: `将验证码发送到您的邮箱${urlOptions.value.accountNumber}`
-  },
-  {
-    value: 2,
-    name: "手机验证码找回"
-  }
-])
+// 定义抛出事件类型
+const emits = defineEmits<{
+  (e: "next", acctNo?: string): void;
+  (e: "prev"): void;
+}>();
 
 // 表单数据
 interface formModelType {
-  retrieveType: number
+  accountNumber: string;
 }
-const formModel = ref({
-  retrieveType: 1,
+const formModel = ref<formModelType>({
+  accountNumber: "",
 });
+
+// 水印信息
+const placeholder = ref("");
 
 // 表单校验规则
 const formRules = {
-  retrieveType: [
-    { required: true, message: "请选择找回方式" },
+  accountNumber: [
+    {
+      required: true,
+      message: `请输入${placeholder.value}`,
+    },
+    {
+      pattern: new RegExp(
+        /(^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$)|(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)/
+      ),
+      message: `请输入${placeholder.value}`,
+    },
   ],
 };
 
+/**
+ * 表单提交
+ * @param values
+ * 验证通过时抛出账号状态
+ */
 function onFinish(values: formModelType): void {
-
+  verifyAccountNumber(values).then(() => {
+    emits("next", formModel.value.accountNumber);
+  });
 }
 
-/**
- * 进入页面时获取上个页面传入的账号
- */
-onMounted(() => {
-  console.log("route.params");
-  console.log(route.params);
+function prev() {
+  emits("prev");
+}
 
-  urlOptions.value.accountNumber = route.params.acctNo as string
-})
+onUpdated(() => {
+  console.log(props.retrieveType, props.retrieveType === "1");
+  placeholder.value = props.retrieveType === "1" ? "邮箱" : "手机号";
+});
 </script>
-  
-  <template>
-  <div>
-    <p class="title">我们需要验证您的身份</p>
-    <p class="subTitle">请选择找回方式</p>
-  </div>
-  <a-form name="step1" :model="formModel" validateTrigger="blur" @finish="onFinish">
-    <a-form-item name="retrieveType" :rules="formRules.retrieveType">
-      <a-radio-group v-model:value="formModel.retrieveType">
-        <a-radio v-for="item in radioArr" :key="item.value" :value="item.value"
-          :style="{ display: 'flex', lineHeight: '1.6rem' }">{{
-    item.name
-          }}</a-radio>
-      </a-radio-group>
-    </a-form-item>
 
+<template>
+  <div>
+    <p class="title">请输入注册时使用的{{ placeholder }}</p>
+    <p class="subTitle"></p>
+  </div>
+  <a-form
+    name="step1"
+    :model="formModel"
+    validateTrigger="blur"
+    @finish="onFinish"
+  >
+    <a-form-item name="accountNumber" :rules="formRules.accountNumber">
+      <a-input
+        :placeholder="'请输入' + placeholder"
+        v-model:value="formModel.accountNumber"
+        :maxlength="32"
+      />
+    </a-form-item>
     <a-form-item>
-      <a-button type="primary" shape="round" size="large" block html-type="submit">继续</a-button>
+      <a-row justify="space-between">
+        <a-col :span="11">
+          <a-button
+            type="primary"
+            shape="round"
+            size="large"
+            block
+            @click="prev"
+            >返回</a-button
+          >
+        </a-col>
+        <a-col :span="11">
+          <a-button
+            type="primary"
+            shape="round"
+            size="large"
+            block
+            html-type="submit"
+            >继续</a-button
+          >
+        </a-col>
+      </a-row>
     </a-form-item>
   </a-form>
 </template>
+
 <style lang="less" scoped>
 .title {
   font-size: 1.5rem;
