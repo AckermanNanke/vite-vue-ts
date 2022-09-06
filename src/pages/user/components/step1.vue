@@ -3,12 +3,12 @@ import { verifyAccountNumber } from "@api/verifyAccountNumber";
 import { ref } from "vue";
 
 // 定义抛出事件类型
-const emit = defineEmits<{
-  (e:"click", status: boolean):void
-}>()
-
+const emit = defineEmits<{ (e: "next", acctNo?: string): void }>()
 // 表单数据
-const formModel = ref({
+interface formModelType {
+  accountNumber: string
+}
+const formModel = ref<formModelType>({
   accountNumber: "",
 });
 
@@ -25,14 +25,16 @@ const formRules = {
   ],
 };
 
-// 表单提交
-function onFinish(values:any):void{
-  console.log(values);
-  
-  verifyAccountNumber(values).then(()=>{
-    emit("click",true)
-  }).catch(()=>{
-    emit("click",false)
+/**
+ * 表单提交
+ * @param values 
+ * 验证通过时抛出账号状态
+ */
+function onFinish(values: formModelType): void {
+  verifyAccountNumber(values).then(() => {
+    emit("next", formModel.value.accountNumber)
+  }).catch(() => {
+    emit("next")
   })
 }
 </script>
@@ -40,7 +42,7 @@ function onFinish(values:any):void{
 <template>
   <div>
     <p class="title">请输入注册邮箱或者手机号</p>
-    <p>注册账号为手机号或者邮箱</p>
+    <p class="subTitle">注册账号为手机号或者邮箱</p>
   </div>
   <a-form name="step1" :model="formModel" validateTrigger="blur" @finish="onFinish">
     <a-form-item name="accountNumber" :rules="formRules.accountNumber">

@@ -13,7 +13,7 @@ import { FLocal, Fsession } from "./baseUtils";
  * 需手动导入方法与样式
  */
 import { message } from "ant-design-vue";
-import "ant-design-vue/es/message/style/css"; //vite只能用 ant-design-vue/es 而非 ant-design-vue/lib
+import "ant-design-vue/es/message/style/index"; //vite只能用 ant-design-vue/es 而非 ant-design-vue/lib
 
 /**
  * 插件安装方法封装

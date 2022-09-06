@@ -6,6 +6,7 @@ import { getMessageNumber } from "./getMessageNumber";
 import { getUserInfo } from "./getUserInfo";
 import { login } from "./login";
 import { register } from "./register";
+import { verifyAccountNumber } from "./verifyAccountNumber";
 
 export default [
   getBankInfo,
@@ -15,4 +16,5 @@ export default [
   login,
   register,
   getCaptcha,
+  verifyAccountNumber,
 ] as MockMethod[];
