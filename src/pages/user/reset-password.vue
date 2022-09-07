@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import Step1 from "./components/step1.vue";
 import Step2 from "./components/step2.vue";
+import Step3 from "./components/step3.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -77,10 +78,11 @@ function goNext(val: unknown) {
       acctNo?: string;
       retrieveType?: string;
     } = {};
-    if (current.value === 1) {
-      query = val;
-    } else if (current.value === 2) {
-      query.acctNo = val as string;
+    if (current.value >= 1) {
+      query = val as {
+        acctNo?: string;
+        retrieveType?: string;
+      };
     }
     router.push({
       name: "reset-password",
@@ -94,6 +96,7 @@ function goNext(val: unknown) {
 
 onMounted(() => {
   current.value = Number(route.params.id) - 1;
+  percent.value = (Number(route.params.id) / stepArr.value.length) * 100;
 });
 
 /**
@@ -101,6 +104,8 @@ onMounted(() => {
  * 所以更新组件参数时使用onUpdated钩子
  */
 onUpdated(() => {
+  console.log(route.query, 123);
+
   if (route.query.acctNo) {
     urlQuery.value.acctNo = route.query.acctNo as string;
   }
@@ -137,6 +142,13 @@ onUpdated(() => {
                   @prev="goPrev"
                   @next="goNext"
                 />
+                <Step3
+                  v-if="$route.params.id === '3'"
+                  :retrieveType="(urlQuery.retrieveType as string)"
+                  :acctNo="(urlQuery.acctNo as string)"
+                  @prev="goPrev"
+                  @next="goNext"
+                />
               </div>
             </a-col>
           </a-row>
@@ -150,19 +162,14 @@ onUpdated(() => {
 .reset-password {
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(
-    70deg,
-    @black 30%,
-    #101010 30%,
-    #101010 50%,
-    @black 50%
-  );
+  background: radial-gradient(@white, @primary-color 50%);
 
   &-body {
+    box-shadow: 0 0 1rem 0.1rem rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     padding: 40px;
     width: 60%;
-    background: @theme-yello;
+    background: @white;
   }
 }
 </style>

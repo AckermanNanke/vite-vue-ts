@@ -1,6 +1,6 @@
 import Mock from "mockjs";
-export const getSmsCode = {
-  url: "/api/getsmscode",
+export const getEmailCode = {
+  url: "/api/getemailcode",
   response: () => {
     return Mock.mock({
       smsVerifiationCode: "123456",

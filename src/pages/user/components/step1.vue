@@ -4,8 +4,8 @@ import { ref } from "vue";
 
 // 定义抛出事件类型
 interface emitParamsType {
-  acctNo?: string;
-  retrieveType?: string;
+  acctNo: string;
+  retrieveType: string;
 }
 const emits = defineEmits<{
   (e: "next", params: emitParamsType): void;
@@ -75,20 +75,15 @@ function onFinish(values: { accountNumber: string }): void {
         v-model:value="formModel.accountNumber"
         :maxlength="32"
       />
-      <template #extra>
-        <div class="form-item-extra">
-          还未创建账号？<router-link to="/register">创建一个</router-link>
-        </div>
-      </template>
+    </a-form-item>
+    <a-form-item>
+      <div class="form-item-extra">
+        <router-link to="/register">还未创建账号？创建一个</router-link>
+      </div>
     </a-form-item>
 
     <a-form-item>
-      <a-button
-        type="primary"
-        shape="round"
-        size="large"
-        block
-        html-type="submit"
+      <a-button type="primary" size="large" block html-type="submit"
         >继续</a-button
       >
     </a-form-item>
@@ -102,7 +97,6 @@ function onFinish(values: { accountNumber: string }): void {
   margin-bottom: 0;
 }
 .form-item-extra {
-  padding-top: 0.8rem;
   a {
     text-decoration: underline;
   }
