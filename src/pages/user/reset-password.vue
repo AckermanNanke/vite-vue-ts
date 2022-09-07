@@ -68,18 +68,19 @@ function goPrev() {
 /**
  * 进入下一步并且步骤条加一
  */
-function goNext(val: string | undefined) {
+function goNext(val: unknown) {
+  current.value++;
+  percent.value += 100 / stepArr.value.length;
+  // 抛出事件带参数的时候进入下个页面时query传入
   if (val) {
-    current.value++;
-    percent.value += 100 / stepArr.value.length;
     let query: {
       acctNo?: string;
       retrieveType?: string;
     } = {};
     if (current.value === 1) {
-      query.retrieveType = val;
+      query = val;
     } else if (current.value === 2) {
-      query.acctNo = val;
+      query.acctNo = val as string;
     }
     router.push({
       name: "reset-password",
@@ -131,7 +132,8 @@ onUpdated(() => {
                 <Step1 v-if="$route.params.id === '1'" @next="goNext" />
                 <Step2
                   v-if="$route.params.id === '2'"
-                  :retrieveType="urlQuery.retrieveType"
+                  :retrieveType="(urlQuery.retrieveType as string)"
+                  :acctNo="(urlQuery.acctNo as string)"
                   @prev="goPrev"
                   @next="goNext"
                 />

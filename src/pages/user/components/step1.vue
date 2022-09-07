@@ -11,11 +11,7 @@ const emits = defineEmits<{
   (e: "next", params: emitParamsType): void;
 }>();
 
-// 表单数据
-interface formModelType {
-  accountNumber: string;
-}
-const formModel = ref<formModelType>({
+const formModel = ref({
   accountNumber: "",
 });
 
@@ -41,17 +37,21 @@ const formRules = {
  * @param values
  * 验证通过时抛出账号状态
  */
-function onFinish(values: formModelType): void {
+function onFinish(values: { accountNumber: string }): void {
   /**
    * 正则判断接受值类型，默认找回类型为邮箱，
    */
   let retrieveType = "1";
-  if (regExp.test(values.accountNumber)) {
+  if (
+    /(^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$)/.test(
+      values.accountNumber
+    )
+  ) {
     retrieveType = "2";
   }
   verifyAccountNumber(values).then(() => {
     emits("next", {
-      acctNo: formModel.value.accountNumber,
+      acctNo: values.accountNumber,
       retrieveType,
     });
   });

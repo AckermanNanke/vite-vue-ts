@@ -29,7 +29,7 @@ declare module '@vue/runtime-core' {
     ASpin: typeof import('ant-design-vue/es')['Spin']
     AStep: typeof import('ant-design-vue/es')['Step']
     ASteps: typeof import('ant-design-vue/es')['Steps']
-    Captcha: typeof import('./src/components/Captcha.vue')['default']
+    Captcha: typeof import('./src/components/captcha.vue')['default']
     GetSmscode: typeof import('./src/components/GetSmscode.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
