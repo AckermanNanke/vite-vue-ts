@@ -95,6 +95,10 @@ onMounted(() => {
   current.value = Number(route.params.id) - 1;
 });
 
+/**
+ * 因为动态路由传参不会再次触发onMounted钩子
+ * 所以更新组件参数时使用onUpdated钩子
+ */
 onUpdated(() => {
   if (route.query.acctNo) {
     urlQuery.value.acctNo = route.query.acctNo as string;
@@ -102,7 +106,6 @@ onUpdated(() => {
   if (route.query.retrieveType) {
     urlQuery.value.retrieveType = route.query.retrieveType as string;
   }
-  console.log(route.query, urlQuery.value);
 });
 </script>
 

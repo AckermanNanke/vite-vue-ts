@@ -54,7 +54,12 @@ function onFinish(values: formModelType): void {
 function prev() {
   emits("prev");
 }
-
+/**
+ * 因为父组件动态路由传参不会再次触发 onMounted 钩子
+ * 所以更新组件参数时使用onUpdated钩子
+ * 接收参数时也要使用 onUpdated 钩子
+ * 无法在初始化赋值数据时更新
+ */
 onUpdated(() => {
   console.log(props.retrieveType, props.retrieveType === "1");
   placeholder.value = props.retrieveType === "1" ? "邮箱" : "手机号";
