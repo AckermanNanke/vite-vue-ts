@@ -31,7 +31,6 @@ const spinning = ref(false);
 
 // 表单提交
 function onFinish(values: formModel) {
-  console.log(values);
   spinning.value = true;
   toLogin(values)
     .then((res) => {
@@ -59,19 +58,22 @@ onBeforeMount(() => {
   };
 }),
   onMounted(() => {
+    spinning.value = true;
     // 获取银行信息并缓存到本地
-    getBankInfo(urlOptions.value).then((res) => {
-      Fsession.set("bankInfo", res.data);
-    });
+    getBankInfo(urlOptions.value)
+      .then((res) => {
+        Fsession.set("bankInfo", res.data);
+      })
+      .finally(() => {
+        spinning.value = false;
+      });
   });
 </script>
 
 <template>
-  <a-spin size="large" :spinning="spinning">
-    <div id="login" class="login">
-      <section
-        class="login-body position-fixed-center box-shadow border-radius"
-      >
+  <div id="login" class="login">
+    <section class="login-body position-fixed-center box-shadow border-radius">
+      <a-spin size="large" :spinning="spinning">
         <div class="logo">
           <a-avatar src="/vite.svg" :size="80" />
         </div>
@@ -147,9 +149,9 @@ onBeforeMount(() => {
           </a-form-item>
         </a-form>
         <div class="text-center">欢迎来到Moke的个人博客</div>
-      </section>
-    </div>
-  </a-spin>
+      </a-spin>
+    </section>
+  </div>
 </template>
 
 <style lang="less" scoped>

@@ -121,7 +121,7 @@ function onFinish(values: { verifiationCode: string }): void {
     <a-form-item>
       <a-row justify="space-between">
         <a-col :span="11">
-          <a-button type="primary" size="large" block @click="prev"
+          <a-button type="primary" size="large" ghost block @click="prev"
             >返回</a-button
           ></a-col
         >

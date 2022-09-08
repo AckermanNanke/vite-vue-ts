@@ -80,7 +80,6 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
       phone: formModel.value.acctNo,
     });
   }
-  console.log(res, 9999);
 
   if (res.status === 200) {
     emits("next");
@@ -88,6 +87,10 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
   emits("setSpinning", false);
 }
 
+// 已收到验证码情况下直接既然进入下一步
+function goNext() {
+  emits("next");
+}
 // 返回上一步
 function prev() {
   emits("prev");
@@ -113,13 +116,10 @@ function prev() {
       </a-radio>
 
       <template #extra>
-        <a
-          class="form-item-extra"
-          @click="onFinish({ radioStatus: formModel.radioStatus })"
-        >
+        <a class="form-item-extra" @click="goNext">
           {{ tipsInfo.successTip }}
         </a>
-        <router-link to="/register" class="form-item-extra" @click="showModal">
+        <router-link to="/register" replace class="form-item-extra">
           {{ tipsInfo.errTip }}
         </router-link>
       </template>
@@ -127,7 +127,7 @@ function prev() {
 
     <a-row justify="space-between">
       <a-col :span="11">
-        <a-button type="primary" size="large" block @click="prev"
+        <a-button type="primary" size="large" ghost block @click="prev"
           >返回</a-button
         ></a-col
       >

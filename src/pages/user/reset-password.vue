@@ -64,7 +64,7 @@ function setSpinning(val: boolean) {
  * 返回第一步
  */
 function goPprevFirst() {
-  router.back();
+  router.replace({ name: "reset-password", params: { id: 1 } });
   percent.value = 100 / stepArr.value.length;
   current.value = 0;
 }
@@ -81,10 +81,16 @@ function goPrev() {
  * 进入下一步并且步骤条加一
  */
 function goNext(val: unknown) {
-  console.log(current.value, 777);
   if (current.value === 3) {
     Fsession?.remove("reset-password-info");
-    router.back();
+    router.replace({
+      name: "user-result",
+      params: {
+        type: "resetPassword",
+        status: "success",
+        countDown: 3,
+      },
+    });
     return false;
   }
   current.value++;

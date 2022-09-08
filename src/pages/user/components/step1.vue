@@ -85,7 +85,7 @@ function onFinish(values: { accountNumber: string }): void {
     </a-form-item>
     <a-form-item>
       <div class="form-item-extra">
-        <router-link to="/register">还未创建账号？创建一个</router-link>
+        <router-link to="/register" replace>还未创建账号？创建一个</router-link>
       </div>
     </a-form-item>
 

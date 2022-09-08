@@ -10,6 +10,3 @@ declare namespace dataType {
   }
 }
 
-declare const enum sceneValue {
-  resetPassword = "reset-password"
-}

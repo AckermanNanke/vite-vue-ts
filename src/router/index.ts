@@ -24,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/reset-password/:id",
     component: () => import("/src/pages/user/reset-password.vue"),
   },
+  {
+    name: "user-result",
+    path: "/user-result",
+    component: () => import("/src/pages/user/reult.vue"),
+  },
 ];
 const router = createRouter({
   history: createWebHashHistory(),
