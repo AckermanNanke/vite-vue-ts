@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { onUpdated, ref } from "vue";
+import { $sessionStorage } from "@utils/pluginKey";
+import { inject, ref } from "vue";
 
 import { getEmailCode } from "@api/getEmailCode";
 import { getSmsCode } from "@api/getSmsCode";
 
-interface propsType {
+const Fsession = inject($sessionStorage);
+
+interface emitsParamsType {
   acctNo: string;
   retrieveType: string;
 }
-// 组件接收参数
-const props = defineProps<propsType>();
-
+// 定义缓存获取数据
+const resetPasswordSession = Fsession?.get(
+  "reset-password-account-info"
+) as emitsParamsType;
 // 定义抛出事件类型
-
 const emits = defineEmits<{
-  (e: "next", params: propsType): void;
+  (e: "next", params: emitsParamsType): void;
   (e: "prev"): void;
 }>();
 
@@ -25,11 +28,20 @@ const tipsInfo = ref({
   errTip: "",
   placeholder: "",
 });
+if (resetPasswordSession.retrieveType === "1") {
+  tipsInfo.value.content = `验证码将发送到您的邮箱`;
+  tipsInfo.value.errTip = "无法接收到验证码？";
+  tipsInfo.value.placeholder = "请输入验证码";
+} else {
+  tipsInfo.value.content = `验证码将发送到您的手机号`;
+  tipsInfo.value.errTip = "手机号已弃用？";
+  tipsInfo.value.placeholder = "请输入短信验证码";
+}
 
 // 表单数据
 const formModel = ref({
-  acctNo: "",
-  retrieveType: "",
+  acctNo: resetPasswordSession.acctNo,
+  retrieveType: resetPasswordSession.retrieveType,
   radioStatus: true,
 });
 
@@ -73,26 +85,6 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
 function prev() {
   emits("prev");
 }
-
-/**
- * 因为父组件动态路由传参不会再次触发 onMounted 钩子
- * 所以更新组件参数时使用onUpdated钩子
- * 接收参数时也要使用 onUpdated 钩子
- * 无法在初始化赋值数据时更新
- */
-onUpdated(() => {
-  formModel.value.acctNo = props.acctNo;
-  formModel.value.retrieveType = props.retrieveType;
-  if (props.retrieveType === "1") {
-    tipsInfo.value.content = `验证码将发送到您的邮箱`;
-    tipsInfo.value.errTip = "无法接收到验证码？";
-    tipsInfo.value.placeholder = "请输入验证码";
-  } else {
-    tipsInfo.value.content = `验证码将发送到您的手机号`;
-    tipsInfo.value.errTip = "手机号已弃用？";
-    tipsInfo.value.placeholder = "请输入短信验证码";
-  }
-});
 </script>
 
 <template>
@@ -109,7 +101,7 @@ onUpdated(() => {
     <a-form-item name="radioStatus" :rule="formRules.radioStatus">
       <a-radio v-model:checked="formModel.radioStatus"
         ><span class="radio-tips"
-          >{{ tipsInfo.content }} {{ props.acctNo }}</span
+          >{{ tipsInfo.content }} {{ resetPasswordSession.acctNo }}</span
         >
       </a-radio>
 

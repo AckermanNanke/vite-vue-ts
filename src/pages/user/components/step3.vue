@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onUpdated, ref } from "vue";
+import { $sessionStorage } from "@utils/pluginKey";
+import { inject, ref } from "vue";
 
-interface propsType {
+interface step3SessionType {
   acctNo: string;
   retrieveType: string;
 }
@@ -12,8 +13,12 @@ interface emitParamsType {
   verifiationCode: string;
 }
 
-// 组件接收参数
-const props = defineProps<propsType>();
+const Fsession = inject($sessionStorage);
+
+// 获取会话缓存数据
+const resetPasswordSession = Fsession?.get(
+  "reset-password-account-info"
+) as step3SessionType;
 
 // 定义抛出事件类型
 const emits = defineEmits<{
@@ -25,13 +30,15 @@ const emits = defineEmits<{
  * 表单数据
  */
 const formModel = ref<emitParamsType>({
-  acctNo: "",
-  retrieveType: "",
+  acctNo: resetPasswordSession.acctNo,
+  retrieveType: resetPasswordSession.retrieveType,
   verifiationCode: "",
 });
 
 // 提示语
-const placeholder = ref("");
+const placeholder = ref(
+  `请输入我们发送至 ${resetPasswordSession.acctNo} 的验证码。`
+);
 
 // 表单校验规则
 const formRules = {
@@ -77,20 +84,6 @@ function onFinish(values: { verifiationCode: string }): void {
   //   });
   // });
 }
-
-/**
- * 因为父组件动态路由传参不会再次触发 onMounted 钩子
- * 所以更新组件参数时使用onUpdated钩子
- * 接收参数时也要使用 onUpdated 钩子
- * 无法在初始化赋值数据时更新
- */
-onUpdated(() => {
-  console.log(123123);
-
-  formModel.value.acctNo = props.acctNo;
-  formModel.value.retrieveType = props.retrieveType;
-  placeholder.value = `请输入我们发送至 ${props.acctNo} 的验证码。`;
-});
 </script>
 
 <template>
@@ -113,7 +106,9 @@ onUpdated(() => {
     </a-form-item>
     <a-form-item>
       <div class="form-item-extra">
-        <router-link to="/register">使用其他验证方式</router-link>
+        <router-link :to="{ name: 'reset-password', params: { id: 1 } }" replace
+          >使用其他验证方式</router-link
+        >
       </div>
     </a-form-item>
 

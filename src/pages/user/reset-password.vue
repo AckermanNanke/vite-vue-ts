@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUpdated, ref } from "vue";
+import { $sessionStorage } from "@utils/pluginKey";
+import { inject, onMounted, onUpdated, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import Step1 from "./components/step1.vue";
@@ -9,10 +10,7 @@ import Step3 from "./components/step3.vue";
 const router = useRouter();
 const route = useRoute();
 
-/**
- * 接收参数
- */
-const urlQuery = ref<{ retrieveType?: string; acctNo?: string }>({});
+const Fsession = inject($sessionStorage);
 
 /**
  * 加载状态
@@ -72,24 +70,14 @@ function goPrev() {
 function goNext(val: unknown) {
   current.value++;
   percent.value += 100 / stepArr.value.length;
-  // 抛出事件带参数的时候进入下个页面时query传入
+  // 抛出事件带参数的时候存入会话缓存
   if (val) {
-    let query: {
-      acctNo?: string;
-      retrieveType?: string;
-    } = {};
-    if (current.value >= 1) {
-      query = val as {
-        acctNo?: string;
-        retrieveType?: string;
-      };
-    }
+    Fsession?.set("reset-password-account-info", val);
     router.push({
       name: "reset-password",
       params: {
         id: current.value + 1,
       },
-      query,
     });
   }
 }
@@ -104,14 +92,10 @@ onMounted(() => {
  * 所以更新组件参数时使用onUpdated钩子
  */
 onUpdated(() => {
-  console.log(route.query, 123);
-
-  if (route.query.acctNo) {
-    urlQuery.value.acctNo = route.query.acctNo as string;
-  }
-  if (route.query.retrieveType) {
-    urlQuery.value.retrieveType = route.query.retrieveType as string;
-  }
+  console.log("reset-password");
+  console.log(route);
+  current.value = Number(route.params.id) - 1;
+  percent.value = (Number(route.params.id) / stepArr.value.length) * 100;
 });
 </script>
 
@@ -137,15 +121,11 @@ onUpdated(() => {
                 <Step1 v-if="$route.params.id === '1'" @next="goNext" />
                 <Step2
                   v-if="$route.params.id === '2'"
-                  :retrieveType="(urlQuery.retrieveType as string)"
-                  :acctNo="(urlQuery.acctNo as string)"
                   @prev="goPrev"
                   @next="goNext"
                 />
                 <Step3
                   v-if="$route.params.id === '3'"
-                  :retrieveType="(urlQuery.retrieveType as string)"
-                  :acctNo="(urlQuery.acctNo as string)"
                   @prev="goPrev"
                   @next="goNext"
                 />
