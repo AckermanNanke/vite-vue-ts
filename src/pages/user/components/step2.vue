@@ -5,21 +5,25 @@ import { inject, ref } from "vue";
 import { getEmailCode } from "@api/getEmailCode";
 import { getSmsCode } from "@api/getSmsCode";
 
+// 获取会话级缓存方法
 const Fsession = inject($sessionStorage);
 
-interface emitsParamsType {
+// 定义获取的缓存对象类型
+interface resetPasswordSessionType {
   acctNo: string;
   retrieveType: string;
 }
-// 定义缓存获取数据
-const resetPasswordSession = Fsession?.get(
-  "reset-password-account-info"
-) as emitsParamsType;
+
 // 定义抛出事件类型
 const emits = defineEmits<{
-  (e: "next", params: emitsParamsType): void;
+  (e: "next", params: { sceneValue: string }): void;
   (e: "prev"): void;
 }>();
+
+// 定义缓存获取数据
+const resetPasswordSession = Fsession?.get(
+  "reset-password-info"
+) as resetPasswordSessionType;
 
 // 单选数据
 const tipsInfo = ref({
@@ -63,21 +67,18 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
   let res;
   if (formModel.value.retrieveType === "1") {
     res = await getEmailCode({
-      sceneValue: "",
+      sceneValue: "reset-password",
       email: formModel.value.acctNo,
     });
   } else {
     res = await getSmsCode({
-      sceneValue: "",
+      sceneValue: "reset-password",
       phone: formModel.value.acctNo,
     });
   }
 
   if (res.status === 200) {
-    emits("next", {
-      acctNo: formModel.value.acctNo,
-      retrieveType: formModel.value.retrieveType,
-    });
+    emits("next", { sceneValue: "reset-password" });
   }
 }
 
@@ -106,7 +107,10 @@ function prev() {
       </a-radio>
 
       <template #extra>
-        <a class="form-item-extra" @click="onFinish">
+        <a
+          class="form-item-extra"
+          @click="onFinish({ radioStatus: formModel.radioStatus })"
+        >
           {{ tipsInfo.successTip }}
         </a>
         <router-link to="/register" class="form-item-extra" @click="showModal">

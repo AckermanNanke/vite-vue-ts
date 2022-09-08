@@ -3,12 +3,12 @@ import { verifyAccountNumber } from "@api/verifyAccountNumber";
 import { ref } from "vue";
 
 // 定义抛出事件类型
-interface emitParamsType {
+interface resetPasswordSessionType {
   acctNo: string;
   retrieveType: string;
 }
 const emits = defineEmits<{
-  (e: "next", params: emitParamsType): void;
+  (e: "next", params: resetPasswordSessionType): void;
 }>();
 
 const formModel = ref({

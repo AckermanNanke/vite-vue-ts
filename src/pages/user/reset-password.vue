@@ -57,6 +57,14 @@ const status = ref<"process" | "wait" | "error" | "finish" | undefined>(
 const percent = ref(100 / stepArr.value.length);
 
 /**
+ * 返回第一步
+ */
+function goPprevFirst() {
+  router.go(-current.value);
+  percent.value = 100 / stepArr.value.length;
+  current.value = 0;
+}
+/**
  * 返回上一步并且步骤条减一
  */
 function goPrev() {
@@ -72,7 +80,9 @@ function goNext(val: unknown) {
   percent.value += 100 / stepArr.value.length;
   // 抛出事件带参数的时候存入会话缓存
   if (val) {
-    Fsession?.set("reset-password-account-info", val);
+    let resetPasswordSession = Fsession?.get("reset-password-info");
+    val = Object.assign({}, resetPasswordSession, val);
+    Fsession?.set("reset-password-info", val);
     router.push({
       name: "reset-password",
       params: {
@@ -126,6 +136,7 @@ onUpdated(() => {
                 />
                 <Step3
                   v-if="$route.params.id === '3'"
+                  @prevFirst="goPprevFirst"
                   @prev="goPrev"
                   @next="goNext"
                 />
