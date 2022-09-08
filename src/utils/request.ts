@@ -1,6 +1,7 @@
 import { ACCESS_TOKEN } from "@config/data/globalConst";
 import { Fsession } from "@utils/baseUtils";
 import { notification } from "ant-design-vue";
+import "ant-design-vue/es/notification/style/index"; //vite只能用 ant-design-vue/es 而非 ant-design-vue/lib
 import Axios, {
   AxiosError,
   AxiosInstance,

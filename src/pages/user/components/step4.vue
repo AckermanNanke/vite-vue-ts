@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { $sessionStorage } from "@utils/pluginKey";
-import { inject, ref } from "vue";
+import type { Rule } from "ant-design-vue/es/form";
+import { inject, readonly, ref } from "vue";
+
+import { resetPassword } from "@api/resetPassword";
 
 interface resetPasswordSessionType {
   acctNo: string;
@@ -17,12 +20,13 @@ interface formModelType {
 const Fsession = inject($sessionStorage);
 
 // 获取会话缓存数据
-const resetPasswordSession = Fsession?.get(
-  "reset-password-info"
-) as resetPasswordSessionType;
+const resetPasswordSession = readonly(
+  Fsession?.get("reset-password-info") as resetPasswordSessionType
+);
 
 // 定义抛出事件类型
 const emits = defineEmits<{
+  (e: "setSpinning", status: boolean): void;
   (e: "next"): void;
 }>();
 
@@ -35,7 +39,7 @@ const formModel = ref<formModelType>({
 });
 
 // 表单校验规则
-const formRules = {
+const formRules: Record<string, Rule[]> = {
   newPassword: [
     {
       required: true,
@@ -45,6 +49,13 @@ const formRules = {
       pattern: new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])(.{6,15})$/),
       message: "密码必须为6-15位，且包含数字、大小写字母",
     },
+    {
+      validator: async (_rule: Rule, value: string) => {
+        if (value != formModel.value.newPassword) {
+          return Promise.reject("两次密码输入不一致");
+        }
+      },
+    },
   ],
 };
 
@@ -53,14 +64,21 @@ const formRules = {
  * @param values
  * 验证通过时抛出账号状态
  */
-function onFinish(values: { verifiationCode: string }): void {
-  // verifyAccountCode({
-  //   accountNumber: formModel.value.acctNo,
-  //   retrieveType: formModel.value.retrieveType,
-  //   verifiationCode: values.verifiationCode,
-  // }).then(() => {
-  emits("next");
-  // });
+function onFinish(values: formModelType): void {
+  emits("setSpinning", true);
+  resetPassword({
+    accountNumber: resetPasswordSession.acctNo,
+    retrieveType: resetPasswordSession.retrieveType,
+    verifiationCode: resetPasswordSession.verifiationCode,
+    newPassword: values.newPassword,
+    confirmPassword: values.confirmPassword,
+  })
+    .then(() => {
+      emits("next");
+    })
+    .finally(() => {
+      emits("setSpinning", false);
+    });
 }
 </script>
 
@@ -76,17 +94,17 @@ function onFinish(values: { verifiationCode: string }): void {
     @finish="onFinish"
   >
     <a-form-item name="newPassword" :rules="formRules.newPassword">
-      <a-input
-        placeholder="请输入新密码"
+      <a-input-password
         v-model:value="formModel.newPassword"
+        placeholder="请输入新密码"
         :maxlength="15"
       />
     </a-form-item>
 
     <a-form-item name="confirmPassword" :rules="formRules.newPassword">
-      <a-input
-        placeholder="请确认新密码"
+      <a-input-password
         v-model:value="formModel.confirmPassword"
+        placeholder="请确认新密码"
         :maxlength="15"
       />
     </a-form-item>

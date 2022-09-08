@@ -22,7 +22,7 @@ const formModel = ref({
   smsVerifiationCode: "",
 });
 // 表单校验规则
-const formRules = {
+const formRules: Record<string, Rule[]> = {
   accountNumber: [
     { required: true, message: "账号不能为空" },
     {

@@ -57,11 +57,14 @@ const status = ref<"process" | "wait" | "error" | "finish" | undefined>(
  */
 const percent = ref(100 / stepArr.value.length);
 
+function setSpinning(val: boolean) {
+  spinning.value = val;
+}
 /**
  * 返回第一步
  */
 function goPprevFirst() {
-  router.go(-current.value);
+  router.back();
   percent.value = 100 / stepArr.value.length;
   current.value = 0;
 }
@@ -71,12 +74,19 @@ function goPprevFirst() {
 function goPrev() {
   current.value--;
   percent.value -= 100 / stepArr.value.length;
+  Fsession?.remove("reset-password-info");
   router.back();
 }
 /**
  * 进入下一步并且步骤条加一
  */
 function goNext(val: unknown) {
+  console.log(current.value, 777);
+  if (current.value === 3) {
+    Fsession?.remove("reset-password-info");
+    router.back();
+    return false;
+  }
   current.value++;
   percent.value += 100 / stepArr.value.length;
   // 抛出事件带参数的时候存入会话缓存
@@ -84,13 +94,13 @@ function goNext(val: unknown) {
     let resetPasswordSession = Fsession?.get("reset-password-info");
     val = Object.assign({}, resetPasswordSession, val);
     Fsession?.set("reset-password-info", val);
-    router.push({
-      name: "reset-password",
-      params: {
-        id: current.value + 1,
-      },
-    });
   }
+  router.replace({
+    name: "reset-password",
+    params: {
+      id: current.value + 1,
+    },
+  });
 }
 
 onMounted(() => {
@@ -103,8 +113,6 @@ onMounted(() => {
  * 所以更新组件参数时使用onUpdated钩子
  */
 onUpdated(() => {
-  console.log("reset-password");
-  console.log(route);
   current.value = Number(route.params.id) - 1;
   percent.value = (Number(route.params.id) / stepArr.value.length) * 100;
 });
@@ -129,19 +137,29 @@ onUpdated(() => {
           <a-row justify="center">
             <a-col :span="8">
               <div :style="{ padding: '3rem 0 0' }">
-                <Step1 v-if="$route.params.id === '1'" @next="goNext" />
+                <Step1
+                  v-if="$route.params.id === '1'"
+                  @next="goNext"
+                  @setSpinning="setSpinning"
+                />
                 <Step2
                   v-if="$route.params.id === '2'"
+                  @setSpinning="setSpinning"
                   @prev="goPrev"
                   @next="goNext"
                 />
                 <Step3
                   v-if="$route.params.id === '3'"
+                  @setSpinning="setSpinning"
                   @prevFirst="goPprevFirst"
                   @prev="goPrev"
                   @next="goNext"
                 />
-                <Step4 v-if="$route.params.id === '4'" @next="goNext" />
+                <Step4
+                  v-if="$route.params.id === '4'"
+                  @setSpinning="setSpinning"
+                  @next="goNext"
+                />
               </div>
             </a-col>
           </a-row>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { verifyAccountNumber } from "@api/verifyAccountNumber";
+import { Rule } from "ant-design-vue/es/form";
 import { ref } from "vue";
 
 // 定义抛出事件类型
@@ -8,6 +9,7 @@ interface resetPasswordSessionType {
   retrieveType: string;
 }
 const emits = defineEmits<{
+  (e: "setSpinning", status: boolean): void;
   (e: "next", params: resetPasswordSessionType): void;
 }>();
 
@@ -19,7 +21,7 @@ const formModel = ref({
 const regExp = new RegExp(
   /(^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$)|(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)/
 );
-const formRules = {
+const formRules: Record<string, Rule[]> = {
   accountNumber: [
     {
       required: true,
@@ -38,6 +40,7 @@ const formRules = {
  * 验证通过时抛出账号状态
  */
 function onFinish(values: { accountNumber: string }): void {
+  emits("setSpinning", true);
   /**
    * 正则判断接受值类型，默认找回类型为邮箱，
    */
@@ -49,12 +52,16 @@ function onFinish(values: { accountNumber: string }): void {
   ) {
     retrieveType = "2";
   }
-  verifyAccountNumber(values).then(() => {
-    emits("next", {
-      acctNo: values.accountNumber,
-      retrieveType,
+  verifyAccountNumber(values)
+    .then(() => {
+      emits("next", {
+        acctNo: values.accountNumber,
+        retrieveType,
+      });
+    })
+    .finally(() => {
+      emits("setSpinning", false);
     });
-  });
 }
 </script>
 

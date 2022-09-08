@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { $sessionStorage } from "@utils/pluginKey";
-import { inject, ref } from "vue";
+import { inject, readonly, ref } from "vue";
 
 import { getEmailCode } from "@api/getEmailCode";
 import { getSmsCode } from "@api/getSmsCode";
+import { Rule } from "ant-design-vue/es/form";
 
 // 获取会话级缓存方法
 const Fsession = inject($sessionStorage);
@@ -16,14 +17,15 @@ interface resetPasswordSessionType {
 
 // 定义抛出事件类型
 const emits = defineEmits<{
+  (e: "setSpinning", status: boolean): void;
   (e: "next"): void;
   (e: "prev"): void;
 }>();
 
 // 定义缓存获取数据
-const resetPasswordSession = Fsession?.get(
-  "reset-password-info"
-) as resetPasswordSessionType;
+const resetPasswordSession = readonly(
+  Fsession?.get("reset-password-info") as resetPasswordSessionType
+);
 
 // 单选数据
 const tipsInfo = ref({
@@ -50,7 +52,7 @@ const formModel = ref({
 });
 
 // 表单校验规则
-const formRules = {
+const formRules: Record<string, Rule[]> = {
   radioStatus: [{ required: true, message: "请选择找回方式" }],
 };
 
@@ -64,6 +66,7 @@ function showModal() {}
  * @param  { formType } _values
  */
 async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
+  emits("setSpinning", true);
   let res;
   if (formModel.value.retrieveType === "1") {
     res = await getEmailCode({
@@ -77,10 +80,12 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
       phone: formModel.value.acctNo,
     });
   }
+  console.log(res, 9999);
 
   if (res.status === 200) {
     emits("next");
   }
+  emits("setSpinning", false);
 }
 
 // 返回上一步

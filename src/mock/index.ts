@@ -8,6 +8,7 @@ import { getSmsCode } from "./getSmsCode";
 import { getUserInfo } from "./getUserInfo";
 import { login } from "./login";
 import { register } from "./register";
+import { resetPassword } from "./resetPassword";
 import { verifyAccountCode } from "./verifyAccountCode";
 import { verifyAccountNumber } from "./verifyAccountNumber";
 
@@ -23,4 +24,5 @@ export default [
   getSmsCode,
   verifyAccountNumber,
   verifyAccountCode,
+  resetPassword,
 ] as MockMethod[];

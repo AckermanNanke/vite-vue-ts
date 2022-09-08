@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { verifyAccountCode } from "@api/verifyAccountCode";
 import { $sessionStorage } from "@utils/pluginKey";
-import { inject, ref } from "vue";
+import { Rule } from "ant-design-vue/es/form";
+import { inject, readonly, ref } from "vue";
 
 interface resetPasswordSessionType {
   acctNo: string;
@@ -17,12 +18,13 @@ interface formModelType {
 const Fsession = inject($sessionStorage);
 
 // 获取会话缓存数据
-const resetPasswordSession = Fsession?.get(
-  "reset-password-info"
-) as resetPasswordSessionType;
+const resetPasswordSession = readonly(
+  Fsession?.get("reset-password-info") as resetPasswordSessionType
+);
 
 // 定义抛出事件类型
 const emits = defineEmits<{
+  (e: "setSpinning", status: boolean): void;
   (
     e: "next",
     params: {
@@ -48,7 +50,7 @@ const placeholder = ref(
 );
 
 // 表单校验规则
-const formRules = {
+const formRules: Record<string, Rule[]> = {
   verifiationCode: [
     {
       required: true,
@@ -77,13 +79,18 @@ function prev() {
  * 验证通过时抛出账号状态
  */
 function onFinish(values: { verifiationCode: string }): void {
+  emits("setSpinning", true);
   verifyAccountCode({
     accountNumber: formModel.value.acctNo,
     retrieveType: formModel.value.retrieveType,
     verifiationCode: values.verifiationCode,
-  }).then(() => {
-    emits("next", { verifiationCode: values.verifiationCode });
-  });
+  })
+    .then(() => {
+      emits("next", { verifiationCode: values.verifiationCode });
+    })
+    .finally(() => {
+      emits("setSpinning", false);
+    });
 }
 </script>
 
