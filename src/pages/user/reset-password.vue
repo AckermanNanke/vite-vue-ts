@@ -6,6 +6,7 @@ import { useRoute, useRouter } from "vue-router";
 import Step1 from "./components/step1.vue";
 import Step2 from "./components/step2.vue";
 import Step3 from "./components/step3.vue";
+import Step4 from "./components/step4.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -140,6 +141,7 @@ onUpdated(() => {
                   @prev="goPrev"
                   @next="goNext"
                 />
+                <Step4 v-if="$route.params.id === '4'" @next="goNext" />
               </div>
             </a-col>
           </a-row>

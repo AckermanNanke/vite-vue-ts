@@ -14,6 +14,14 @@ export type reqType = {
    * 验证码
    */
   verifiationCode: string;
+  /**
+   * 新密码
+   */
+  newPassword: string;
+  /**
+   * 确认新密码
+   */
+  confirmPassword: string;
 };
 export type resType = {
 };
@@ -22,6 +30,6 @@ export type resType = {
  * @param { String } userID
  * @returns { Promise }
  */
-export function verifyAccountCode(data: reqType) {
-  return Request.instance.post<resType, AxiosResponse<resType>, reqType>("verifyaccountcode", data);
+export function resetPassword(data: reqType) {
+  return Request.instance.post<resType, AxiosResponse<resType>, reqType>("resetpassword", data);
 }

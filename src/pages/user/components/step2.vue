@@ -16,7 +16,7 @@ interface resetPasswordSessionType {
 
 // 定义抛出事件类型
 const emits = defineEmits<{
-  (e: "next", params: { sceneValue: string }): void;
+  (e: "next"): void;
   (e: "prev"): void;
 }>();
 
@@ -67,7 +67,8 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
   let res;
   if (formModel.value.retrieveType === "1") {
     res = await getEmailCode({
-      sceneValue: "reset-password",
+      // sceneValue: sceneValue.sceneValue.resetPassword,
+      sceneValue: "",
       email: formModel.value.acctNo,
     });
   } else {
@@ -78,7 +79,7 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
   }
 
   if (res.status === 200) {
-    emits("next", { sceneValue: "reset-password" });
+    emits("next");
   }
 }
 

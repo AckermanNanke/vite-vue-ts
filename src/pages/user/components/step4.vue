@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { verifyAccountCode } from "@api/verifyAccountCode";
 import { $sessionStorage } from "@utils/pluginKey";
 import { inject, ref } from "vue";
 
 interface resetPasswordSessionType {
   acctNo: string;
   retrieveType: string;
+  verifiationCode: string;
 }
 
 interface formModelType {
-  acctNo: string;
-  retrieveType: string;
-  verifiationCode: string;
+  newPassword: string;
+  confirmPassword: string;
 }
+
 // 接收缓存方法
 const Fsession = inject($sessionStorage);
 
@@ -23,53 +23,30 @@ const resetPasswordSession = Fsession?.get(
 
 // 定义抛出事件类型
 const emits = defineEmits<{
-  (
-    e: "next",
-    params: {
-      verifiationCode: string;
-    }
-  ): void;
-  (e: "prev"): void;
-  (e: "prevFirst"): void;
+  (e: "next"): void;
 }>();
 
 /**
  * 表单数据
  */
 const formModel = ref<formModelType>({
-  acctNo: resetPasswordSession.acctNo,
-  retrieveType: resetPasswordSession.retrieveType,
-  verifiationCode: "",
+  newPassword: "",
+  confirmPassword: "",
 });
-
-// 提示语
-const placeholder = ref(
-  `请输入我们发送至 ${resetPasswordSession.acctNo} 的验证码。`
-);
 
 // 表单校验规则
 const formRules = {
-  verifiationCode: [
+  newPassword: [
     {
       required: true,
-      message: "验证码不能为空",
+      message: "请输入密码",
     },
     {
-      pattern: /^[\d]{6}&/,
-      message: "验证码须为6位数字",
+      pattern: new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])(.{6,15})$/),
+      message: "密码必须为6-15位，且包含数字、大小写字母",
     },
   ],
 };
-
-// 返回第一步
-function prevFirst() {
-  emits("prevFirst");
-}
-
-// 返回上一步
-function prev() {
-  emits("prev");
-}
 
 /**
  * 表单提交
@@ -77,53 +54,47 @@ function prev() {
  * 验证通过时抛出账号状态
  */
 function onFinish(values: { verifiationCode: string }): void {
-  verifyAccountCode({
-    accountNumber: formModel.value.acctNo,
-    retrieveType: formModel.value.retrieveType,
-    verifiationCode: values.verifiationCode,
-  }).then(() => {
-    emits("next", { verifiationCode: values.verifiationCode });
-  });
+  // verifyAccountCode({
+  //   accountNumber: formModel.value.acctNo,
+  //   retrieveType: formModel.value.retrieveType,
+  //   verifiationCode: values.verifiationCode,
+  // }).then(() => {
+  emits("next");
+  // });
 }
 </script>
 
 <template>
   <div>
-    <p class="title">验证您的身份</p>
-    <p class="subTitle">输入我们发送至 {{ formModel.acctNo }} 的验证码。</p>
+    <p class="title">请重置您的密码？</p>
+    <p class="subTitle">重置后您的旧密码将无法使用</p>
   </div>
   <a-form
-    name="step1"
+    name="step4"
     :model="formModel"
     validateTrigger="blur"
     @finish="onFinish"
   >
-    <a-form-item name="verifiationCode" :rules="formRules.verifiationCode">
+    <a-form-item name="newPassword" :rules="formRules.newPassword">
       <a-input
-        :placeholder="placeholder"
-        v-model:value="formModel.verifiationCode"
-        :maxlength="32"
+        placeholder="请输入新密码"
+        v-model:value="formModel.newPassword"
+        :maxlength="15"
       />
     </a-form-item>
-    <a-form-item>
-      <div class="form-item-extra">
-        <a @click="prevFirst">使用其他验证方式</a>
-      </div>
+
+    <a-form-item name="confirmPassword" :rules="formRules.newPassword">
+      <a-input
+        placeholder="请确认新密码"
+        v-model:value="formModel.confirmPassword"
+        :maxlength="15"
+      />
     </a-form-item>
 
     <a-form-item>
-      <a-row justify="space-between">
-        <a-col :span="11">
-          <a-button type="primary" size="large" block @click="prev"
-            >返回</a-button
-          ></a-col
-        >
-        <a-col :span="11">
-          <a-button type="primary" size="large" block html-type="submit"
-            >提交</a-button
-          ></a-col
-        >
-      </a-row>
+      <a-button type="primary" size="large" block html-type="submit"
+        >提交</a-button
+      >
     </a-form-item>
   </a-form>
 </template>

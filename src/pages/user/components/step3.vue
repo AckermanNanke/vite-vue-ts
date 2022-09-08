@@ -55,7 +55,7 @@ const formRules = {
       message: "验证码不能为空",
     },
     {
-      pattern: /^[\d]{6}&/,
+      pattern: new RegExp(/^[\d]{6}$/),
       message: "验证码须为6位数字",
     },
   ],
@@ -93,7 +93,7 @@ function onFinish(values: { verifiationCode: string }): void {
     <p class="subTitle">输入我们发送至 {{ formModel.acctNo }} 的验证码。</p>
   </div>
   <a-form
-    name="step1"
+    name="step3"
     :model="formModel"
     validateTrigger="blur"
     @finish="onFinish"
@@ -102,7 +102,7 @@ function onFinish(values: { verifiationCode: string }): void {
       <a-input
         :placeholder="placeholder"
         v-model:value="formModel.verifiationCode"
-        :maxlength="32"
+        :maxlength="6"
       />
     </a-form-item>
     <a-form-item>

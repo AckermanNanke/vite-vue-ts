@@ -8,17 +8,19 @@ import { getSmsCode } from "./getSmsCode";
 import { getUserInfo } from "./getUserInfo";
 import { login } from "./login";
 import { register } from "./register";
+import { verifyAccountCode } from "./verifyAccountCode";
 import { verifyAccountNumber } from "./verifyAccountNumber";
 
 export default [
+  register,
+  login,
   getBankInfo,
   getUserInfo,
   getHotKeyword,
   getMessageNumber,
-  login,
-  register,
   getCaptcha,
-  verifyAccountNumber,
   getEmailCode,
   getSmsCode,
+  verifyAccountNumber,
+  verifyAccountCode,
 ] as MockMethod[];
