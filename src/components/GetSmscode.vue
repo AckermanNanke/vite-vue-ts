@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 
 import { getSmsCode } from "@api/getSmsCode";
 
@@ -16,15 +16,15 @@ const emit = defineEmits<{
 /**
  * 计时器
  */
-let Timer = ref<NodeJS.Timer | null>(null);
+const Timer = ref<NodeJS.Timer | null>(null);
 /**
  * 按钮是否可点击
  */
-let disabled = ref(false);
+const disabled = ref(false);
 /**
  * 倒计时时间
  */
-let countDown = ref(props.countDown || 3);
+const countDown = ref(props.countDown || 3);
 
 /**
  * 调用获取短信验证码接口
@@ -53,6 +53,10 @@ function getSmscode(): void {
       emit("click", "");
     });
 }
+
+onBeforeUnmount(() => {
+  clearInterval(Number(Timer.value));
+});
 </script>
 
 <template>
