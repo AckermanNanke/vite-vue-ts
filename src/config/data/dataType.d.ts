@@ -8,5 +8,10 @@ declare namespace dataType {
     userEmail: string;
     username: string;
   }
+  interface menuItem {
+    id: string
+    name: string
+    children?: Array<menuItem>
+  }
 }
 

@@ -6,7 +6,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/login",
+    redirect: "/index",
   },
   {
     name: "index",

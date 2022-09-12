@@ -8,6 +8,8 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AAvatar: typeof import('ant-design-vue/es')['Avatar']
+    ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
+    ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     ACol: typeof import('ant-design-vue/es')['Col']
@@ -18,10 +20,14 @@ declare module '@vue/runtime-core' {
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
     ALayout: typeof import('ant-design-vue/es')['Layout']
     ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
+    ALayoutFooter: typeof import('ant-design-vue/es')['LayoutFooter']
     ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
     ALayoutSider: typeof import('ant-design-vue/es')['LayoutSider']
     AList: typeof import('ant-design-vue/es')['List']
     AListItem: typeof import('ant-design-vue/es')['ListItem']
+    AMenu: typeof import('ant-design-vue/es')['Menu']
+    AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
+    AMenuItemGroup: typeof import('ant-design-vue/es')['MenuItemGroup']
     ARadio: typeof import('ant-design-vue/es')['Radio']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
@@ -30,10 +36,13 @@ declare module '@vue/runtime-core' {
     ASpin: typeof import('ant-design-vue/es')['Spin']
     AStep: typeof import('ant-design-vue/es')['Step']
     ASteps: typeof import('ant-design-vue/es')['Steps']
-    Captcha: typeof import('./src/components/captcha.vue')['default']
+    ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
+    Captcha: typeof import('./src/components/Captcha.vue')['default']
     GetSmscode: typeof import('./src/components/GetSmscode.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    Layout: typeof import('./src/components/config/Layout.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SubMenu: typeof import('./src/components/config/SubMenu.vue')['default']
   }
 }
