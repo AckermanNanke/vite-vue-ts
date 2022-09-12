@@ -1,4 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+/**
+ * params传参需在此定义传参类型
+ * 例如：/user-result:type:urlName:status:countDown?
+ */
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -26,8 +30,9 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: "user-result",
-    path: "/user-result",
+    path: "/user-result:type:urlName:status:countDown?",
     component: () => import("/src/pages/user/reult.vue"),
+    props: true
   },
 ];
 const router = createRouter({

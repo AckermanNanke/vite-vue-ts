@@ -4,6 +4,7 @@ import { inject, readonly, ref } from "vue";
 
 import { getEmailCode } from "@api/getEmailCode";
 import { getSmsCode } from "@api/getSmsCode";
+import { sceneValue } from "@config/data/globalConst";
 import { Rule } from "ant-design-vue/es/form";
 
 // 获取会话级缓存方法
@@ -70,13 +71,12 @@ async function onFinish(_values: { radioStatus: boolean }): Promise<any> {
   let res;
   if (formModel.value.retrieveType === "1") {
     res = await getEmailCode({
-      // sceneValue: sceneValue.sceneValue.resetPassword,
-      sceneValue: "",
+      sceneValue: sceneValue["0"],
       email: formModel.value.acctNo,
     });
   } else {
     res = await getSmsCode({
-      sceneValue: "reset-password",
+      sceneValue: sceneValue["0"],
       phone: formModel.value.acctNo,
     });
   }

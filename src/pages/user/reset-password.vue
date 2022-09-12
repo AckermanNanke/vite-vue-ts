@@ -86,12 +86,13 @@ function goNext(val: unknown) {
     router.replace({
       name: "user-result",
       params: {
-        type: "resetPassword",
+        type: "reset-password",
+        urlName: "index",
         status: "success",
-        countDown: 3,
+        countDown: 5,
       },
     });
-    return false;
+    return true;
   }
   current.value++;
   percent.value += 100 / stepArr.value.length;
