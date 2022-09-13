@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 /**
- * params传参需在此定义传参类型
+ * TODO
+ * params传参需在此定义传参类型，会导致页面 URL 展示不对，正在查找原因
  * 例如：/user-result:type:urlName:status:countDown?
  */
 const routes: Array<RouteRecordRaw> = [
