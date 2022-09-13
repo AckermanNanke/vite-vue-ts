@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { menu } from "@config/data/globalConst";
+import { MenuFoldOutlined } from "@ant-design/icons-vue";
 import SubMenu from "@components/config/SubMenu.vue";
-
+import { menu } from "@config/data/globalConst";
+import { ref } from "vue";
 const collapsed = ref(false);
 const openKeys = ref<string[]>(["1"]);
 const selectedKeys = ref<string[]>(["11"]);
@@ -16,24 +16,21 @@ function toggleCollapsed() {
 }
 </script>
 <template>
-  <a-layout has-sider>
+  <a-layout class="layout-100vw">
     <a-layout-sider
-      :style="{
-        overflow: 'auto',
-        height: '100vh',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        bottom: 0,
-      }"
       v-model:collapsed="collapsed"
+      collapsed-width="40"
+      theme="light"
     >
-      <div class="logo" />
-      <a-button type="primary" @click="toggleCollapsed"> 展开 </a-button>
+      <div class="f-flex f-justify-between sider-logo">
+        <div v-if="!collapsed">
+          <img src="/vite.svg" alt="" />
+        </div>
+        <menu-fold-outlined @click="toggleCollapsed" />
+      </div>
       <a-menu
         v-model:openKeys="openKeys"
         v-model:selectedKeys="selectedKeys"
-        theme="dark"
         mode="inline"
       >
         <template v-for="item in menuList" :key="item.id">
@@ -53,21 +50,28 @@ function toggleCollapsed() {
         </template>
       </a-menu>
     </a-layout-sider>
-    <a-layout :style="{ marginLeft: '200px' }">
-      <a-layout-header :style="{ background: '#fff', padding: 0 }" />
-      <a-layout-content :style="{ margin: '24px 16px 0', overflow: 'initial' }">
-        <div
-          :style="{
-            padding: '24px',
-            background: '#fff',
-            textAlign: 'center',
-            height: '2000px',
-          }"
-        ></div>
-      </a-layout-content>
-      <a-layout-footer :style="{ textAlign: 'center' }">
-        Ant Design ©2018 Created by Ant UED
-      </a-layout-footer>
+    <a-layout>
+      <a-layout-header />
+      <a-layout class="layout-content-f">
+        <a-layout-content>
+          <div
+            :style="{
+              padding: '24px',
+              background: '#fff',
+              textAlign: 'center',
+              height: '2000px',
+            }"
+          ></div>
+          <a-layout-footer :style="{ textAlign: 'center' }">
+            Ant Design ©2018 Created by Ant UED
+          </a-layout-footer>
+        </a-layout-content>
+      </a-layout>
     </a-layout>
   </a-layout>
 </template>
+<style lang="less" scoped>
+.sider-logo {
+  padding: 1rem 1.4rem;
+}
+</style>

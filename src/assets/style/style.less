@@ -1,6 +1,23 @@
 /*
 * 项目共用样式（类名）
 */
+.layout-100vw {
+  width: 100vw;
+  height: 100vh;
+}
+.layout-content-f {
+  margin: 24px 16px;
+  overflow-y: auto;
+  overflow-x: inherit;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+  overflow-x: inherit;
+}
+.overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: inherit;
+}
 .position-fixed-center {
   position: fixed;
   top: 50%;
@@ -29,4 +46,67 @@
 .form-item-extra-center {
   line-height: 2em;
   text-align: center;
+}
+
+.f-flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+.f-direction-column {
+  -webkit-box-orient: vertical;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+.f-justify-center {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.f-justify-end {
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+.f-justify-between {
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+.f-align-start {
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.f-align-end {
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+.f-align-center {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+.f-align-baseline {
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  -webkit-align-items: baseline;
+  align-items: baseline;
 }
