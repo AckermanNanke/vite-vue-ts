@@ -8,7 +8,7 @@ declare namespace dataType {
     userID: string;
     userphone: string;
     userEmail: string;
-    username: string;
+    userName: string;
   }
   interface menuItem {
     id: string

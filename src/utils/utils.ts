@@ -5,6 +5,23 @@ import { Fsession } from "./baseUtils";
 
 import { register } from "@api/register";
 import router from "../router";
+
+/**
+ * 防抖函数
+ * @param { Function } fn 传入的处理方法
+ * @param { number } delay 延迟时间
+ * */
+export function debounce(fn: Function, delay: number = 1000): Function {
+  let Timer: NodeJS.Timer | null = null;
+  return function () {
+    clearTimeout(Number(Timer));
+    Timer = setTimeout(() => {
+      fn.call(null, arguments);
+    }, delay);
+  };
+};
+
+
 /**
  * 注册方法封装
  * @param data 注册用参数

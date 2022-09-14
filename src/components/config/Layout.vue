@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { MenuFoldOutlined } from "@ant-design/icons-vue";
+import LayoutHeader from "@components/config/LayoutHeader.vue";
 import SubMenu from "@components/config/SubMenu.vue";
 import { menu } from "@config/data/globalConst";
 import { ref } from "vue";
+
+// 是否展开侧边栏
 const collapsed = ref(false);
-const openKeys = ref<string[]>(["1"]);
+// 默认选中菜单项
 const selectedKeys = ref<string[]>(["11"]);
+// 默认展开子菜单
+const openKeys = ref<string[]>(["1"]);
+// 菜单栏
 const menuList = ref(menu);
 
 /**
@@ -51,7 +57,9 @@ function toggleCollapsed() {
       </a-menu>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header />
+      <a-layout-header>
+        <LayoutHeader :props="" />
+      </a-layout-header>
       <a-layout class="layout-content-f">
         <a-layout-content>
           <div
