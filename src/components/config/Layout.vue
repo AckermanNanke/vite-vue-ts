@@ -13,6 +13,10 @@ const selectedKeys = ref<string[]>(["11"]);
 const openKeys = ref<string[]>(["1"]);
 // 菜单栏
 const menuList = ref(menu);
+// 头部信息
+const headerInfo = ref({
+  userName: "用户名",
+});
 
 /**
  * 展开收起菜单
@@ -58,20 +62,13 @@ function toggleCollapsed() {
     </a-layout-sider>
     <a-layout>
       <a-layout-header>
-        <LayoutHeader :props="" />
+        <LayoutHeader :props="headerInfo" />
       </a-layout-header>
       <a-layout class="layout-content-f">
         <a-layout-content>
-          <div
-            :style="{
-              padding: '24px',
-              background: '#fff',
-              textAlign: 'center',
-              height: '2000px',
-            }"
-          ></div>
+          <slot name="content" />
           <a-layout-footer :style="{ textAlign: 'center' }">
-            Ant Design ©2018 Created by Ant UED
+            <slot name="footer" />
           </a-layout-footer>
         </a-layout-content>
       </a-layout>

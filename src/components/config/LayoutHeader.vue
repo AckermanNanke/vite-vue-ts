@@ -8,7 +8,7 @@ interface searchItem {
 }
 // const props = defineProps<dataType.userInfo>();
 const props = ref({
-  userName: "u规格",
+  userName: "",
 });
 // 搜索内容
 const searchValue = ref("");
