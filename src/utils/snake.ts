@@ -31,25 +31,18 @@ export class snake {
    * getElementsByTagName() 方法返回的就是一个 HTMLCollection 对象。
    */
   bodies: NodeListOf<HTMLDivElement>;
-  direction: "top" | "left";
   constructor() {
     this.snake = document.getElementById("snake")!
     this.head = document.querySelector("#snake > div")!
     this.bodies = document.querySelectorAll("#snake div")
-    this.move({ moveX: 10 });
-    this.direction = "left"
   }
+  // 获取蛇头X
   getX(): number {
     return this.head.offsetLeft
   }
+  // 获取蛇头Y
   getY(): number {
     return this.head.offsetTop
-  }
-  getDirection() {
-    return this.direction
-  }
-  setDirection(val: "top" | "left") {
-    this.direction = val;
   }
   /**
    * 蛇移动，根据传入的方向修改方位
@@ -76,3 +69,39 @@ export class snake {
     }, 500)
   }
 }
+/**
+ * 综合类
+ */
+export class esurientSnake {
+  snake: snake;
+  food: food;
+  artBoard: HTMLElement;
+  direction: "top" | "left"; // 方向
+  constructor() {
+    this.artBoard = document.getElementById("artboard")!;
+    this.snake = new snake();
+    this.food = new food();
+    this.snake.move({ moveX: 10 });
+    this.direction = "left";
+  }
+  /**
+   * 判断是否撞到自己
+   * 判断是否撞墙
+   *  @returns { boolean }
+   */
+  getSnakeStatus() {
+    let isDie: boolean = false;
+    // 是否撞到自己
+    this.snake.bodies.forEach(item => {
+      if (this.snake.getX() === item.offsetLeft || this.snake.getY() === item.offsetTop) {
+        isDie = true
+      }
+    })
+    // 是否撞到边界
+
+    return isDie
+  }
+  // 判断是否撞墙
+}
+export { }
+
