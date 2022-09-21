@@ -2,10 +2,14 @@
  * 定义食物
  * 获取食物横坐标，纵坐标，被吃掉时刷新功能
  */
-export class food {
-  elem: HTMLElement
-  constructor() {
-    this.elem = document.getElementById("food")!
+class food {
+  boradX: number
+  boradY: number
+  elem: HTMLElement;
+  constructor(x: number, y: number) {
+    this.elem = document.getElementById("food")!;
+    this.boradX = x;
+    this.boradY = y;
   }
   getX() {
     return this.elem.offsetLeft
@@ -14,13 +18,13 @@ export class food {
     return this.elem.offsetTop
   }
   change() {
-    this.elem.style.top = 0 + "px"
-    this.elem.style.left = 0 + "px"
+    this.elem.style.top = (Math.floor(Math.random() * (this.boradX - 0)) + 0) + "px"
+    this.elem.style.left = (Math.floor(Math.random() * (this.boradY - 0)) + 0) + "px"
   }
 }
 
-export class snake {
-  Timer: NodeJS.Timer | undefined
+class snake {
+  Timer: any
   //获取蛇的元素
   snake: HTMLElement;
   //表示蛇头的元素
@@ -31,10 +35,19 @@ export class snake {
    * getElementsByTagName() 方法返回的就是一个 HTMLCollection 对象。
    */
   bodies: NodeListOf<HTMLDivElement>;
+  // 画板载体
+  artBoard: HTMLElement;
+  // 食物
+  food: food;
+  // 蛇头递减数字
+  headI: number;
   constructor() {
     this.snake = document.getElementById("snake")!
-    this.head = document.querySelector("#snake > div")!
     this.bodies = document.querySelectorAll("#snake div")
+    this.artBoard = document.getElementById("artboard")!;
+    this.food = new food(this.artBoard.clientWidth, this.artBoard.clientHeight);
+    this.headI = this.bodies.length - 1;
+    this.head = this.bodies[this.headI];
   }
   // 获取蛇头X
   getX(): number {
@@ -52,21 +65,64 @@ export class snake {
     // 调用移动前先清除定时器，防止叠加
     clearInterval(Number(this.Timer));
     this.Timer = setInterval(() => {
-      // 蛇头位置
-      let snakeHeadX = this.getX();
-      let snakeHeadY = this.getY();
-      // 蛇尾元素
-      let lastDiv: HTMLElement = this.bodies[this.bodies.length - 1];
       /**
        * 蛇尾移动到蛇头
        */
       if (data.moveX != undefined) {
-        lastDiv.style.left = `${snakeHeadX + data.moveX}px`;
+        this.bodies[this.headI].style.left = `${this.getX() + data.moveX}px`;
       }
       if (data.moveY != undefined) {
-        lastDiv.style.top = `${snakeHeadY + data.moveY}px`;
+        this.bodies[this.headI].style.top = `${this.getY() + data.moveY}px`;
       }
-    }, 500)
+
+      this.eatFood();
+      this.bodies = document.querySelectorAll("#snake div")!;
+
+      // this.getSnakeStatus();
+
+      // 蛇头下标重置
+      if (this.headI <= 0) {
+        this.headI = this.bodies.length - 1;
+      } else {
+        this.headI -= 1;
+      }
+    }, 300)
+  }
+
+  /**
+ * 判断是否撞到自己
+ * 判断是否撞墙
+ *  @returns { boolean }
+ */
+  getSnakeStatus() {
+    let isDie: boolean = false;
+    // 是否撞到自己
+    if (this.bodies.length > 1) {
+      this.bodies.forEach((item, index) => {
+        if (this.headI != index) {
+          if (this.getX() === item.offsetLeft && this.getY() === item.offsetTop) {
+            isDie = true
+          }
+        }
+      })
+    }
+    // 是否撞到边界
+    if (this.getX() < 10 || this.getX() > this.artBoard.clientWidth - 10 || this.getY() < 10 || this.getY() > this.artBoard.clientHeight - 10) {
+      isDie = true
+    }
+    if (isDie) {
+      alert("蛇已死亡");
+      clearInterval(Number(this.Timer));
+    }
+  }
+  /**
+   * 判断是否吃到食物
+   */
+  eatFood() {
+    if (this.getX() === this.food.getX() && this.getY() === this.food.getY()) {
+      document.getElementById("snake")?.appendChild(document.createElement("div"));
+      this.food.change();
+    }
   }
 }
 /**
@@ -74,34 +130,36 @@ export class snake {
  */
 export class esurientSnake {
   snake: snake;
-  food: food;
-  artBoard: HTMLElement;
-  direction: "top" | "left"; // 方向
+  direction: "X" | "Y"; // 方向
   constructor() {
-    this.artBoard = document.getElementById("artboard")!;
     this.snake = new snake();
-    this.food = new food();
     this.snake.move({ moveX: 10 });
-    this.direction = "left";
+    this.direction = "X";
   }
+
   /**
-   * 判断是否撞到自己
-   * 判断是否撞墙
-   *  @returns { boolean }
+   * 判断蛇在横向移动还是纵向移动
+   * 并修改蛇前进方向
    */
-  getSnakeStatus() {
-    let isDie: boolean = false;
-    // 是否撞到自己
-    this.snake.bodies.forEach(item => {
-      if (this.snake.getX() === item.offsetLeft || this.snake.getY() === item.offsetTop) {
-        isDie = true
+  snakeMove(mouseX: number, mouseY: number) {
+    if (this.direction === "X") {
+      if (mouseY != this.snake.getY()) {
+        this.direction = "Y"
+        if (mouseY > this.snake.getY()) {
+          this.snake.move({ moveY: 10 });
+        } else {
+          this.snake.move({ moveY: -10 });
+        }
       }
-    })
-    // 是否撞到边界
-
-    return isDie
+    } else {
+      if (mouseX != this.snake.getX()) {
+        this.direction = "X"
+        if (mouseX > this.snake.getX()) {
+          this.snake.move({ moveX: 10 });
+        } else {
+          this.snake.move({ moveX: -10 });
+        }
+      }
+    }
   }
-  // 判断是否撞墙
 }
-export { }
-
