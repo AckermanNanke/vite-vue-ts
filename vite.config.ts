@@ -9,7 +9,7 @@ import { viteMockServe } from "vite-plugin-mock";
  * @param { String } mode .env文件后缀
  */
 export default defineConfig(({ command, mode }) => {
-  let defineConfig = {
+  return {
     // root: "",
     base: command === "build" ? "/vite-vue-ts/" : "/",
     plugins: [
@@ -41,5 +41,4 @@ export default defineConfig(({ command, mode }) => {
       },
     },
   };
-  return defineConfig;
 });

@@ -21,6 +21,22 @@ export function debounce(fn: Function, delay: number = 1000): Function {
   };
 };
 
+/**
+ * 节流函数
+ * 防止一直点击蛇不会动
+ * 时间设为与蛇移动时间一致
+ */
+export function throttle(func: Function, delay: number): (this: any) => void {
+  let preTime = 0;
+  return function (this: any) {
+    let now = Date.now();
+    if (Date.now() - preTime > delay) {
+      func.apply(this, arguments);
+      preTime = now;
+    }
+  }
+}
+
 
 /**
  * 注册方法封装

@@ -18,8 +18,8 @@ class food {
     return this.elem.offsetTop
   }
   change() {
-    this.elem.style.top = (Math.floor(Math.random() * (this.boradX - 0)) + 0) + "px"
-    this.elem.style.left = (Math.floor(Math.random() * (this.boradY - 0)) + 0) + "px"
+    this.elem.style.left = ((Math.floor(Math.random() * (Math.floor(this.boradX / 10) - 20)) + 20) * 10) + "px";
+    this.elem.style.top = ((Math.floor(Math.random() * (Math.floor(this.boradY / 10) - 20)) + 20) * 10) + "px";
   }
 }
 
@@ -40,14 +40,14 @@ class snake {
   // 食物
   food: food;
   // 蛇头递减数字
-  headI: number;
+  headIndex: number;
   constructor() {
     this.snake = document.getElementById("snake")!
-    this.bodies = document.querySelectorAll("#snake div")
+    this.head = document.querySelector("#snake > div")!
+    this.bodies = document.querySelectorAll("#snake div");
     this.artBoard = document.getElementById("artboard")!;
     this.food = new food(this.artBoard.clientWidth, this.artBoard.clientHeight);
-    this.headI = this.bodies.length - 1;
-    this.head = this.bodies[this.headI];
+    this.headIndex = this.bodies.length - 1;
   }
   // 获取蛇头X
   getX(): number {
@@ -59,7 +59,8 @@ class snake {
   }
   /**
    * 蛇移动，根据传入的方向修改方位
-   * @param data 
+   * @param { number } moveX  横向移动
+   * @param { number } moveY 纵向移动
    */
   move(data: { moveX?: number, moveY?: number }) {
     // 调用移动前先清除定时器，防止叠加
@@ -69,24 +70,27 @@ class snake {
        * 蛇尾移动到蛇头
        */
       if (data.moveX != undefined) {
-        this.bodies[this.headI].style.left = `${this.getX() + data.moveX}px`;
+        this.bodies[this.headIndex].style.top = `${this.getY()}px`
+        this.bodies[this.headIndex].style.left = `${this.getX() + data.moveX}px`;
       }
       if (data.moveY != undefined) {
-        this.bodies[this.headI].style.top = `${this.getY() + data.moveY}px`;
+        this.bodies[this.headIndex].style.left = `${this.getX()}px`
+        this.bodies[this.headIndex].style.top = `${this.getY() + data.moveY}px`;
       }
+      // 移动后把移动的设为蛇头
+      this.eatFood(data);
+      this.getSnakeStatus();
+      this.head = this.bodies[this.headIndex];
 
-      this.eatFood();
-      this.bodies = document.querySelectorAll("#snake div")!;
-
-      // this.getSnakeStatus();
-
-      // 蛇头下标重置
-      if (this.headI <= 0) {
-        this.headI = this.bodies.length - 1;
+      /**
+       * 通过计时器遍历蛇头，当小于零时重置下标
+       */
+      if (this.headIndex <= 0) {
+        this.headIndex = this.bodies.length - 1
       } else {
-        this.headI -= 1;
+        this.headIndex -= 1
       }
-    }, 300)
+    }, 200)
   }
 
   /**
@@ -97,17 +101,20 @@ class snake {
   getSnakeStatus() {
     let isDie: boolean = false;
     // 是否撞到自己
-    if (this.bodies.length > 1) {
-      this.bodies.forEach((item, index) => {
-        if (this.headI != index) {
-          if (this.getX() === item.offsetLeft && this.getY() === item.offsetTop) {
-            isDie = true
-          }
+    this.bodies.forEach((item, index) => {
+      console.log("开始=============");
+      console.log(this.headIndex, index);
+      console.log(this.getX(), item.offsetLeft);
+      console.log(this.getY(), item.offsetTop);
+
+      if (this.headIndex != index) {
+        if (this.getX() === item.offsetLeft && this.getY() === item.offsetTop) {
+          isDie = true
         }
-      })
-    }
+      }
+    })
     // 是否撞到边界
-    if (this.getX() < 10 || this.getX() > this.artBoard.clientWidth - 10 || this.getY() < 10 || this.getY() > this.artBoard.clientHeight - 10) {
+    if (this.getX() < 0 || this.getX() > this.artBoard.clientWidth || this.getY() < 0 || this.getY() > this.artBoard.clientHeight) {
       isDie = true
     }
     if (isDie) {
@@ -116,12 +123,29 @@ class snake {
     }
   }
   /**
-   * 判断是否吃到食物
-   */
-  eatFood() {
+  * 判断是否吃到食物
+  * 增加蛇身体
+  * 重置食物
+  * 根据方向设置位置
+  * 重设蛇身体元素
+  * @param data
+  */
+  eatFood(data: { moveX?: number, moveY?: number }) {
     if (this.getX() === this.food.getX() && this.getY() === this.food.getY()) {
-      document.getElementById("snake")?.appendChild(document.createElement("div"));
+      this.snake.appendChild(document.createElement("div"));
+      this.bodies = document.querySelectorAll("#snake div");
       this.food.change();
+
+      let lastBodyTop = this.bodies[this.headIndex - 1].offsetTop;
+      let lastBodyLeft = this.bodies[this.headIndex - 1].offsetLeft;
+      if (data.moveX) {
+        this.bodies[this.bodies.length - 1].style.left = `${lastBodyLeft + 10}px`
+        this.bodies[this.bodies.length - 1].style.top = `${lastBodyTop}px`;
+      }
+      if (data.moveY) {
+        this.bodies[this.bodies.length - 1].style.left = `${lastBodyLeft}px`
+        this.bodies[this.bodies.length - 1].style.top = `${lastBodyTop + 10}px`;
+      }
     }
   }
 }
