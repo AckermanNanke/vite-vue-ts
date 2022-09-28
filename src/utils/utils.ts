@@ -23,8 +23,9 @@ export function debounce(fn: Function, delay: number = 1000): Function {
 
 /**
  * 节流函数
- * 防止一直点击蛇不会动
- * 时间设为与蛇移动时间一致
+ * @param func 使用节流函数的方法
+ * @param delay 间隔时间
+ * @returns 
  */
 export function throttle(func: Function, delay: number): (this: any) => void {
   let preTime = 0;
@@ -36,7 +37,6 @@ export function throttle(func: Function, delay: number): (this: any) => void {
     }
   }
 }
-
 
 /**
  * 注册方法封装
