@@ -3,6 +3,7 @@ import { getBankInfo } from "./getBankInfo";
 import { getCaptcha } from "./getCaptcha";
 import { getEmailCode } from "./getEmailCode";
 import { getHotKeyword } from "./getHotKeyword";
+import { getMenuList } from "./getMenuList";
 import { getMessageNumber } from "./getMessageNumber";
 import { getSmsCode } from "./getSmsCode";
 import { getUserInfo } from "./getUserInfo";
@@ -25,4 +26,5 @@ export default [
   verifyAccountNumber,
   verifyAccountCode,
   resetPassword,
+  getMenuList,
 ] as MockMethod[];

@@ -13,6 +13,7 @@ declare namespace dataType {
   interface menuItem {
     id: string
     name: string
+    url: string
     children?: Array<menuItem>
   }
 }

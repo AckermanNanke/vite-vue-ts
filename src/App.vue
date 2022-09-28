@@ -2,7 +2,8 @@
 import Layout from "@components/config/Layout.vue";
 </script>
 <template>
-  <Layout>
+  <router-view v-if="$route.name === 'login'" />
+  <Layout v-else>
     <template #content>
       <keep-alive v-if="$route.meta.keepAlive">
         <router-view />

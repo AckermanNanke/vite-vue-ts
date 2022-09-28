@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MenuFoldOutlined } from "@ant-design/icons-vue";
+import { getMenuList } from "@api/getMenuList";
 import LayoutHeader from "@components/config/LayoutHeader.vue";
 import SubMenu from "@components/config/SubMenu.vue";
-import { menu } from "@config/data/globalConst";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 // 是否展开侧边栏
 const collapsed = ref(false);
@@ -12,7 +12,7 @@ const selectedKeys = ref<string[]>(["11"]);
 // 默认展开子菜单
 const openKeys = ref<string[]>(["1"]);
 // 菜单栏
-const menuList = ref(menu);
+const menuList = ref<dataType.menuItem[] | null>(null);
 // 头部信息
 const headerInfo = ref({
   userName: "用户名",
@@ -24,6 +24,16 @@ const headerInfo = ref({
 function toggleCollapsed() {
   collapsed.value = !collapsed.value;
 }
+onMounted(() => {
+  /**
+   * 获取菜单列表
+   */
+  getMenuList({
+    userLv: "",
+  }).then((res) => {
+    menuList.value = res.data.list;
+  });
+});
 </script>
 <template>
   <a-layout class="layout-100vw">
@@ -32,9 +42,12 @@ function toggleCollapsed() {
       collapsed-width="40"
       theme="light"
     >
-      <div class="f-flex f-justify-between sider-logo">
-        <div v-if="!collapsed">
-          <img src="/vite.svg" alt="" />
+      <div class="f-flex f-justify-between sider-top">
+        <div class="f-flex f-w100">
+          <div v-if="!collapsed">
+            <img src="/vite.svg" alt="" />
+          </div>
+          <span class="sider-top-title">Free</span>
         </div>
         <menu-fold-outlined @click="toggleCollapsed" />
       </div>
@@ -76,7 +89,12 @@ function toggleCollapsed() {
   </a-layout>
 </template>
 <style lang="less" scoped>
-.sider-logo {
+.sider-top {
   padding: 1rem 1.4rem;
+  &-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding-left: 1rem;
+  }
 }
 </style>
