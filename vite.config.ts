@@ -10,6 +10,9 @@ import { viteMockServe } from "vite-plugin-mock";
  */
 export default defineConfig(({ command, mode }) => {
   return {
+    server: {
+      port: 8998
+    },
     // root: "",
     base: command === "build" ? "/vite-vue-ts/" : "/",
     plugins: [

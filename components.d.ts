@@ -39,7 +39,7 @@ declare module '@vue/runtime-core' {
     AStep: typeof import('ant-design-vue/es')['Step']
     ASteps: typeof import('ant-design-vue/es')['Steps']
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
-    Captcha: typeof import('./src/components/Captcha.vue')['default']
+    Captcha: typeof import('./src/components/captcha.vue')['default']
     GetSmscode: typeof import('./src/components/GetSmscode.vue')['default']
     Header: typeof import('./src/components/config/Header.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

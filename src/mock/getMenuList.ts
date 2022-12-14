@@ -23,12 +23,12 @@ export const getMenuList = {
         },
         {
           id: "30001",
-          name: "三方插件",
-          url: "/register",
+          name: "小工具",
+          url: "/",
           children: [{
             id: "31001",
-            name: "Echarts图表",
-            url: "/",
+            name: "H5人脸识别",
+            url: "/face-h5",
           }]
         }
       ],
