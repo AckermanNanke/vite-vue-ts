@@ -1,7 +1,5 @@
 import { ACCESS_TOKEN } from "@config/data/globalConst";
-import { Fsession } from "@utils/baseUtils";
-import { notification } from "ant-design-vue";
-import "ant-design-vue/es/notification/style/index"; //vite只能用 ant-design-vue/es 而非 ant-design-vue/lib
+import { Fpopup, Fsession } from "@utils/baseUtils";
 import Axios, {
   AxiosError,
   AxiosInstance,
@@ -118,9 +116,7 @@ export class Request {
     let key = error.config.url;
     switch (error.response?.status) {
       case 404:
-        notification.error({
-          message: "接口不存在",
-        });
+        Fpopup.alert("接口不存在")
         break;
       default:
         // const handleError: never = error.status;

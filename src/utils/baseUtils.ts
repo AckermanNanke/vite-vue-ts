@@ -38,8 +38,19 @@ class freeStorage {
   }
 }
 
+/**
+ * 全局弹窗方法
+ */
+class freePopup {
+  constructor() { }
+  alert(val: string) {
+    window.alert(val)
+  }
+}
+
 const FLocal = new freeStorage(StorageType.L);
 const Fsession = new freeStorage(StorageType.S);
+const Fpopup = new freePopup();
 
-export { FLocal, Fsession, freeStorage };
+export { FLocal, Fsession, Fpopup, freeStorage, freePopup };
 

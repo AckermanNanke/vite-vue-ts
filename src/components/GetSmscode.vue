@@ -60,12 +60,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <a-button
-    id="sms-btn"
-    type="primary"
-    :disabled="disabled"
-    block
-    @click="getSmscode"
-    >{{ disabled ? `已发送（${countDown}）秒` : `获取验证码` }}
-  </a-button>
+  <button id="sms-btn" :disabled="disabled" @click="getSmscode">
+    {{ disabled ? `已发送（${countDown}）秒` : `获取验证码` }}
+  </button>
 </template>
