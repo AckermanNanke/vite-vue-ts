@@ -3,7 +3,10 @@ import App from "./App.vue";
 import router from "./router";
 
 // 引入第三方插件库
-import plugin from "@utils/plugin";
+import plugin from "@config/plugin";
+
+// 阿里云图标库
+import "@assets/iconfont/iconfont.css";
 
 export const app = createApp(App);
 app.use(router).use(plugin).mount("#app");

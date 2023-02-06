@@ -31,6 +31,7 @@ export default defineConfig(({ command, mode }) => {
         "@api": "/src/api",
         "@utils": "/src/utils",
         "@components": "/src/components",
+        "@assets": "/src/assets",
       },
     },
     css: {

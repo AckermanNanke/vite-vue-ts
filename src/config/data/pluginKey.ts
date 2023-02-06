@@ -1,4 +1,4 @@
-import { freePopup, freeStorage } from "@utils/baseUtils";
+import { freePopup, freeStorage } from "@config/pluginImplements";
 import { AxiosInstance } from "axios";
 import type { InjectionKey } from "vue";
 

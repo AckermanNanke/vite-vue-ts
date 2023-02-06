@@ -3,10 +3,10 @@ import {
   $loacalStorage,
   $message,
   $sessionStorage
-} from "@utils/pluginKey";
+} from "@config/data/pluginKey";
+import { FLocal, Fpopup, Fsession } from "@config/pluginImplements";
 import Request from "@utils/request";
 import { readonly } from "vue";
-import { FLocal, Fpopup, Fsession } from "./baseUtils";
 
 
 /**

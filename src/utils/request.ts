@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN } from "@config/data/globalConst";
-import { Fpopup, Fsession } from "@utils/baseUtils";
+import { Fpopup, Fsession } from "@config/pluginImplements";
 import Axios, {
   AxiosError,
   AxiosInstance,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { throttle } from "@utils/utils";
 import { onMounted, ref } from "vue";
 
 /**
@@ -6,27 +7,34 @@ import { onMounted, ref } from "vue";
  */
 const props = defineProps<{
   distance: number; //触发加载的距离
+  delay: number; //节流函数触发时间间隔，不传入则使用0
 }>();
 
 /**
  * 定义抛出事件类型
+ * loadEnd  加载完成时调用
  */
+type emitType = {
+  [propName: string]: () => void;
+};
 const emit = defineEmits<{
-  (e: "pullUp", func: () => void): void;
-  (e: "pullDown", func: () => void): void;
+  (e: "pullUp", el: emitType): void;
+  (e: "pullDown", el: emitType): void;
 }>();
 
 const upLoading = ref(false); //是否加载中
 const downLoading = ref(false); //是否刷新中
-const scrollEl = ref(); //组件实例
-const TSParams = ref<TouchEvent | undefined>();
-const TEParams = ref<TouchEvent | undefined>();
 
-function touchstart(e: TouchEvent) {
+const scrollEl = ref(); //组件实例
+const TSParams = ref<TouchEvent | undefined>(); //保存初始触摸位置
+const TEParams = ref<TouchEvent | undefined>(); //保存结束时触摸位置
+
+const touchstart = throttle((e: TouchEvent) => {
   if (upLoading.value || downLoading.value) return false;
   TSParams.value = e;
-}
-async function touchend(e: TouchEvent) {
+}, props.delay)
+
+const touchend = throttle((e: TouchEvent) => {
   if (upLoading.value || downLoading.value) return false;
   TEParams.value = e;
   const Y =
@@ -36,8 +44,8 @@ async function touchend(e: TouchEvent) {
   // 下拉刷新
   if (Y - props.distance >= 0) {
     downLoading.value = true;
-    emit("pullDown", () => {
-      loadEnd();
+    emit("pullDown", {
+      loadEnd,
     });
   }
   /**
@@ -48,50 +56,48 @@ async function touchend(e: TouchEvent) {
   if (
     Math.abs(
       scrollEl.value.scrollHeight -
-        scrollEl.value.clientHeight -
-        scrollEl.value.scrollTop
+      scrollEl.value.clientHeight -
+      scrollEl.value.scrollTop
     ) < props.distance
   ) {
     if (-Y >= props.distance) {
       upLoading.value = true;
-      emit("pullUp", () => {
-        loadEnd();
+      emit("pullUp", {
+        loadEnd,
       });
     }
   }
-}
+}, props.delay)
 // 触摸移动事件
 function touchmove(e: TouchEvent) {
   if (upLoading.value || downLoading.value) return false;
 }
+/**
+ * 加载完成后修改加载中状态
+ */
 function loadEnd() {
   upLoading.value = false;
   downLoading.value = false;
 }
-onMounted(() => {});
+
+onMounted(() => { });
 </script>
 
 <template>
-  <section
-    class="f-infitinite-scroll"
-    ref="scrollEl"
-    @touchstart="touchstart"
-    @touchend="touchend"
-    @touchmove="touchmove"
-  >
-    <slot name="no-data"> 没有数据 </slot>
-    <slot name="downLoading">
+  <section class="f-infitinite-scroll" ref="scrollEl" @touchstart="touchstart" @touchend="touchend"
+    @touchmove="touchmove">
+    <slot name="refresh">
       <div class="f-infitinite-scroll-loading" :class="{ active: downLoading }">
         加载中...
       </div>
     </slot>
     <slot></slot>
-    <slot name="upLoading">
-      <div class="f-infitinite-scroll-loading" :class="{ active: upLoading }">
-        上拉加载更多数据
+    <slot name="upload">
+      <div class="f-infitinite-scroll-loading active">
+        {{ upLoading? "这已经是我的底线了": "上拉加载更多数据" }}
+        <span class='iconfont icon-sousuo' v-if='upLoading'></span>
       </div>
     </slot>
-    <slot name="no-more"> 这已经是我的底线了 </slot>
   </section>
 </template>
 <style lang="less">
@@ -100,10 +106,14 @@ onMounted(() => {});
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
+
   &-loading {
+    background: #f5f5f5;
+
     &.active {
       height: 60px;
     }
+
     line-height: 60px;
     color: @text-tip;
     text-align: center;

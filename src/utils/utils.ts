@@ -1,7 +1,7 @@
 import type { reqType as loginDatatype } from "@api/login";
 import { login } from "@api/login";
 import type { reqType as registerDataType } from "@api/register";
-import { Fsession } from "./baseUtils";
+import { Fsession } from "@config/pluginImplements";
 
 import { register } from "@api/register";
 import router from "../router";
