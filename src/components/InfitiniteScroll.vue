@@ -29,11 +29,17 @@ const scrollEl = ref(); //组件实例
 const TSParams = ref<TouchEvent | undefined>(); //保存初始触摸位置
 const TEParams = ref<TouchEvent | undefined>(); //保存结束时触摸位置
 
+/**
+ * 触摸开始事件
+ */
 const touchstart = throttle((e: TouchEvent) => {
   if (upLoading.value || downLoading.value) return false;
   TSParams.value = e;
 }, props.delay)
 
+/**
+ * 触摸结束事件
+ */
 const touchend = throttle((e: TouchEvent) => {
   if (upLoading.value || downLoading.value) return false;
   TEParams.value = e;
@@ -68,10 +74,12 @@ const touchend = throttle((e: TouchEvent) => {
     }
   }
 }, props.delay)
+
 // 触摸移动事件
 function touchmove(e: TouchEvent) {
   if (upLoading.value || downLoading.value) return false;
 }
+
 /**
  * 加载完成后修改加载中状态
  */
