@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "@vue/runtime-core";
+import { register } from "@api/register";
+import { onMounted, ref } from "@vue/runtime-core";
 const arr = ref<number[]>([]);
 function pullUp(el: { [propName: string]: () => void }) {
   setTimeout(() => {
@@ -11,13 +12,21 @@ function pullDown(el: { [propName: string]: () => void }) {
   console.log(el);
   setTimeout(() => {
     el.loadEnd();
-  }, 0);
+  }, 1000);
 }
+onMounted(() => {
+  register({
+    userName: "",
+    password: "",
+    phone: 1,
+    smsVerifiationCode: ""
+  })
+})
 </script>
 
 <template>
   <div style="height: 100vh; display: flex; flex-direction: column">
-    <section style="width: 100%; flex: 1; max-height: 60vh;background:#ffffff;">
+    <section style="width: 100%; flex: 1; background:#ffffff;">
       <InfitiniteScroll :distance="20" :delay="0" @pullUp="pullUp" @pullDown="pullDown">
         <div class="scroll" v-for="item in arr" :key="item"></div>
       </InfitiniteScroll>

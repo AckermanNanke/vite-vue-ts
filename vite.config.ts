@@ -11,7 +11,14 @@ import { viteMockServe } from "vite-plugin-mock";
 export default defineConfig(({ command, mode }) => {
   return {
     server: {
-      port: 8998
+      port: 8998,
+      proxy: {
+        '/api': {
+          target: 'http://127.0.0.1:8999',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      }
     },
     // root: "",
     base: command === "build" ? "/vite-vue-ts/" : "/",

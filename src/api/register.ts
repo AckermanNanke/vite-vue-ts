@@ -2,9 +2,9 @@ import Request from "@utils/request";
 import { AxiosResponse } from "axios";
 
 export type reqType = {
-  accountNumber: string;
+  userName: string;
   password: string;
-  phone: string;
+  phone: number;
   smsVerifiationCode: string;
 };
 export type resType = {
@@ -15,7 +15,7 @@ export type resType = {
 };
 /**
  * 注册
- * @param { String } accountNumber
+ * @param { String } userName
  * @param { String } password
  * @param { String } phone
  * @param { String } smsVerifiationCode
