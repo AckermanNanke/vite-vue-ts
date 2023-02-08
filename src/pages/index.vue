@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { register } from "@api/register";
 import { onMounted, ref } from "@vue/runtime-core";
-const arr = ref<number[]>([]);
-function pullUp(el: { [propName: string]: () => void }) {
-  setTimeout(() => {
-    arr.value!.push(1);
-    el.loadEnd();
-  }, 2000);
-}
-function pullDown(el: { [propName: string]: () => void }) {
-  console.log(el);
-  setTimeout(() => {
-    el.loadEnd();
-  }, 1000);
-}
+const btnList = ref([
+  {
+    name: "infiniteScroll",
+    description: "无限滚动组件"
+  },
+  {
+    name: "faceH5",
+    description: "视频录制"
+  }
+]);
+
 onMounted(() => {
   register({
     userName: "",
@@ -25,26 +23,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div style="height: 100vh; display: flex; flex-direction: column">
-    <section style="width: 100%; flex: 1; background:#ffffff;">
-      <InfitiniteScroll :distance="20" :delay="0" @pullUp="pullUp" @pullDown="pullDown">
-        <div class="scroll" v-for="item in arr" :key="item"></div>
-      </InfitiniteScroll>
-    </section>
-  </div>
+  <button v-for="item in btnList" @click="$router.push({ name: item.name })">{{ item.description }}</button>
 </template>
-<style lang="less">
-body {
-  background: #000000;
-}
+<style lang="less" scoped>
 
-.scroll {
-  height: 50vh;
-  width: 100%;
-  background: #999999;
-}
-
-.scroll:nth-child(2n + 1) {
-  background: #c6fcd9;
-}
 </style>
+

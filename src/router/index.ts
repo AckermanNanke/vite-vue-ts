@@ -14,27 +14,16 @@ const routes: Array<RouteRecordRaw> = [
     path: "/index",
     component: () => import("/src/pages/index.vue"),
   },
-  // {
-  //   name: "register",
-  //   path: "/register",
-  //   component: () => import("/src/pages/user/register.vue"),
-  // },
-  // {
-  //   name: "login",
-  //   path: "/login",
-  //   component: () => import("/src/pages/user/login.vue"),
-  // },
-  // {
-  //   name: "reset-password",
-  //   path: "/reset-password/:id",
-  //   component: () => import("/src/pages/user/reset-password.vue"),
-  // },
-  // {
-  //   name: "user-result",
-  //   path: "/user-result:type:urlName:status:countDown?",
-  //   component: () => import("/src/pages/user/reult.vue"),
-  //   props: true
-  // },
+  {
+    name: "infiniteScroll",
+    path: "/infiniteScroll",
+    component: () => import("/src/pages/infiniteScroll.vue"),
+  },
+  {
+    name: "faceH5",
+    path: "/faceH5",
+    component: () => import("/src/pages/faceH5.vue"),
+  },
 ];
 const router = createRouter({
   history: createWebHashHistory(),

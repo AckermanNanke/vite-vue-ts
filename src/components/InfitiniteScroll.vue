@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { throttle } from "@utils/utils";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 /**
  * 组件所需参数值
@@ -22,12 +22,32 @@ const emit = defineEmits<{
   (e: "pullDown", el: emitType): void;
 }>();
 
+
+const noMoreData = ref(false); //是否没有数据了
 const upLoading = ref(false); //是否加载中
 const downLoading = ref(false); //是否刷新中
 
-const scrollEl = ref(); //组件实例
+const scrollEl = ref(null); //组件实例
 const TSParams = ref<TouchEvent | undefined>(); //保存初始触摸位置
 const TEParams = ref<TouchEvent | undefined>(); //保存结束时触摸位置
+
+/**
+ * 底部提示
+ */
+const UpLoadingTips = computed(() => {
+  if (upLoading.value) {
+    return "加载中……"
+
+  } else {
+    if (noMoreData.value) {
+      return "我已经到底线了"
+
+    } else {
+      return "上拉加载更多数据"
+    }
+  }
+})
+
 
 /**
  * 触摸开始事件
@@ -52,6 +72,7 @@ const touchend = throttle((e: TouchEvent) => {
     downLoading.value = true;
     emit("pullDown", {
       loadEnd,
+      completed,
     });
   }
   /**
@@ -70,6 +91,7 @@ const touchend = throttle((e: TouchEvent) => {
       upLoading.value = true;
       emit("pullUp", {
         loadEnd,
+        completed,
       });
     }
   }
@@ -87,6 +109,12 @@ function loadEnd() {
   upLoading.value = false;
   downLoading.value = false;
 }
+/**
+ * 加载完成
+ */
+function completed() {
+  noMoreData.value = true
+}
 
 onMounted(() => { });
 </script>
@@ -102,13 +130,13 @@ onMounted(() => { });
     <slot></slot>
     <slot name="upload">
       <div class="f-infitinite-scroll-loading active">
-        {{ upLoading? "这已经是我的底线了": "上拉加载更多数据" }}
-        <span class='iconfont icon-sousuo' v-if='upLoading'></span>
+        {{ UpLoadingTips }}
+        {{ upLoading? "": "上拉加载更多数据" }}
       </div>
     </slot>
   </section>
 </template>
-<style lang="less">
+<style lang="less" scoped>
 .f-infitinite-scroll {
   width: 100%;
   height: 100%;
