@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     GetSmscode: typeof import('./src/components/GetSmscode.vue')['default']
     InfitiniteScroll: typeof import('./src/components/InfitiniteScroll.vue')['default']
     Layout: typeof import('./src/components/config/Layout.vue')['default']
+    LoadingIcon: typeof import('./src/components/LoadingIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import LoadingIcon from "@components/LoadingIcon.vue";
 import { throttle } from "@utils/utils";
 import { computed, onMounted, ref } from "vue";
-
 /**
  * 组件所需参数值
  */
@@ -35,10 +35,7 @@ const TEParams = ref<TouchEvent | undefined>(); //保存结束时触摸位置
  * 底部提示
  */
 const UpLoadingTips = computed(() => {
-  if (upLoading.value) {
-    return "加载中……"
-
-  } else {
+  if (!upLoading.value) {
     if (noMoreData.value) {
       return "我已经到底线了"
 
@@ -47,7 +44,6 @@ const UpLoadingTips = computed(() => {
     }
   }
 })
-
 
 /**
  * 触摸开始事件
@@ -123,15 +119,15 @@ onMounted(() => { });
   <section class="f-infitinite-scroll" ref="scrollEl" @touchstart="touchstart" @touchend="touchend"
     @touchmove="touchmove">
     <slot name="refresh">
-      <div class="f-infitinite-scroll-loading" :class="{ active: downLoading }">
-        加载中...
+      <div class="f-infitinite-scroll-loading f-flex f-align-center" :class="{ active: downLoading }">
+        <LoadingIcon name="circle-plain" v-if="downLoading" />
       </div>
     </slot>
     <slot></slot>
     <slot name="upload">
-      <div class="f-infitinite-scroll-loading active">
+      <div class="f-infitinite-scroll-loading f-flex f-align-center active">
+        <LoadingIcon name="circle-plain" v-if="upLoading" />
         {{ UpLoadingTips }}
-        {{ upLoading? "": "上拉加载更多数据" }}
       </div>
     </slot>
   </section>
@@ -150,7 +146,6 @@ onMounted(() => { });
       height: 60px;
     }
 
-    line-height: 60px;
     color: @text-tip;
     text-align: center;
     overflow: hidden;
