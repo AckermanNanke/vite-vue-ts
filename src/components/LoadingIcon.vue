@@ -7,7 +7,7 @@ onMounted(() => { })
 </script>
 <template>
   <div class="f-loading-icon">
-    <i :class="'loading-' + name"></i>
+    <i :class="'loading-' + props.name"></i>
   </div>
 </template>
 
