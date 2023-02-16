@@ -113,7 +113,6 @@ export class Request {
     console.error("错误信息================start");
     console.error(error);
     console.error("错误信息================end");
-    let key = error.config.url;
     switch (error.response?.status) {
       case 404:
         Fpopup.alert("接口不存在")

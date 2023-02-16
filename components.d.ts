@@ -8,7 +8,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Captcha: typeof import('./src/components/Captcha.vue')['default']
-    copy: typeof import('./src/components/config/GetSmscode copy.vue')['default']
     GetSmscode: typeof import('./src/components/GetSmscode.vue')['default']
     InfitiniteScroll: typeof import('./src/components/InfitiniteScroll.vue')['default']
     Layout: typeof import('./src/components/config/Layout.vue')['default']

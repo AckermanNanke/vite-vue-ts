@@ -27,7 +27,7 @@ const noMoreData = ref(false); //是否没有数据了
 const upLoading = ref(false); //是否加载中
 const downLoading = ref(false); //是否刷新中
 
-const scrollEl = ref(null); //组件实例
+const scrollEl = ref<HTMLInputElement | null>(null); //组件实例
 const TSParams = ref<TouchEvent | undefined>(); //保存初始触摸位置
 const TEParams = ref<TouchEvent | undefined>(); //保存结束时触摸位置
 
@@ -61,7 +61,7 @@ const touchend = throttle((e: TouchEvent) => {
   TEParams.value = e;
   const Y =
     TEParams.value!.changedTouches[0]?.pageY - TSParams.value!.touches[0].pageY; // 垂直移动距离
-  const scrollY = scrollEl.value.scrollHeight; //可滚动区域的高度
+  const scrollY = scrollEl.value!.scrollHeight; //可滚动区域的高度
 
   // 下拉刷新
   if (Y - props.distance >= 0) {
@@ -78,9 +78,9 @@ const touchend = throttle((e: TouchEvent) => {
    */
   if (
     Math.abs(
-      scrollEl.value.scrollHeight -
-      scrollEl.value.clientHeight -
-      scrollEl.value.scrollTop
+      scrollEl.value!.scrollHeight -
+      scrollEl.value!.clientHeight -
+      scrollEl.value!.scrollTop
     ) < props.distance
   ) {
     if (-Y >= props.distance) {
