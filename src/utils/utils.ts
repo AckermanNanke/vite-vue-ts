@@ -46,7 +46,7 @@ export function throttle(func: Function, delay: number): (this: any) => void {
  * @param level 压缩等级
  * @returns {Promise<unknown>}
  */
-export function getConpressBase64(options: {
+export function getCompressBase64(options: {
   file: File;
   maxSize: number;
   maxWidth: number;

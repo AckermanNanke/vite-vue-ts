@@ -3,6 +3,10 @@ import { register } from "@api/register";
 import { onMounted, ref } from "@vue/runtime-core";
 const btnList = ref([
   {
+    name: "calendar",
+    description: "日历组件"
+  },
+  {
     name: "infiniteScroll",
     description: "无限滚动组件"
   },
@@ -25,7 +29,5 @@ onMounted(() => {
 <template>
   <button v-for="item in btnList" @click="$router.push({ name: item.name })">{{ item.description }}</button>
 </template>
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>
 

@@ -24,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/faceH5",
     component: () => import("/src/pages/faceH5.vue"),
   },
+  {
+    name: "calendar",
+    path: "/calendar",
+    component: () => import("/src/pages/calendar.vue"),
+  },
 ];
 const router = createRouter({
   history: createWebHashHistory(),
