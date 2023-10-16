@@ -60,7 +60,11 @@ function getCurrentMonthDays(months: number[], month?: number) {
 
 }
 
-// 渲染日历
+/**
+ * 渲染日历
+ * @param type 日历类型 1 周一在前面 | 0 周末在前面
+ * @param options 渲染日历所用参数，如果使用传参的话年月日必须同时传
+ */
 function renderCalendar(type = 1, options?: {
   year?: number,
   month?: number,
