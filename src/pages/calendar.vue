@@ -49,8 +49,8 @@ const monthArr = [
 // 获取当前 年, 月, 日
 const nowDate = new Date()
 const nowYear = Number(nowDate.toJSON().substring(0, 4))
-const nowMonth = Number(nowDate.toJSON().substring(5, 7))
-const nowDay = Number(nowDate.toJSON().substring(6, 9))
+const nowMonth = nowDate.toJSON().substring(5, 7)
+const nowDay = nowDate.toJSON().substring(6, 9)
 
 // 枚举月份天数
 const monthsArr = ref<number[][]>([
@@ -71,7 +71,7 @@ function getLeapTwelveyears(year: number): boolean {
 function getMonthInfo(type = 0, {
   year = NaN,
   month = NaN,
-  data = NaN
+  date = NaN
 }) {
   if (type) {
     if (month - 2 < 0) {
@@ -95,7 +95,7 @@ function getMonthInfo(type = 0, {
   // 获取当前年对应月份天数
   const currentMonths = monthsArr.value[Number(isRYear)]
   // 获取当月1号是星期几
-  const weekDay = new Date(`${year}-${month > 10 ? month : "0" + month}-01`).getDay() || 7
+  const weekDay = new Date(`${year}-${month > 10 ? month : "0" + month}-${date}`).getDay() || 7
   // 获取当月有多少天
   const monthDays = currentMonths[month - 1]
   return {
@@ -112,7 +112,7 @@ function getMonthInfo(type = 0, {
  * @param options 渲染日历所用参数，如果使用传参的话年月日必须同时传
  */
 function renderCalendar(type = 1, options?: {
-  year?: number,
+  year: number,
   month?: number,
   date?: number,
 }) {
