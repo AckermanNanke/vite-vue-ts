@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
+/**
+ * 日历类型
+ */
+type calendarType = {
+  year: number,
+  month: number,
+  date: number,
+  data: any[]
+}
+
 const emit = defineEmits<{
   (e: "getcurrentDays", val: number): void;
 }>();
 
 // 日历表头
 let week = ref<any[]>([]);
-let calendarData = ref<any[]>([]);
+let calendarData = ref<calendarType>();
 
 
 const weekArr = [
@@ -52,12 +62,48 @@ const monthsArr = ref<number[][]>([
 function getLeapTwelveyears(year: number): boolean {
   return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0
 }
-// 获取当月有多少天
-function getCurrentMonthDays(months: number[], month?: number) {
-  let days = months[month || nowMonth]
-  emit("getcurrentDays", days)
-  return days
 
+/**
+ * 获取月的信息
+ * @param type 上个月还是下个月   0-上个月 | 1-当月 | 2-下个月
+ * @param param1 年月
+ */
+function getMonthInfo(type = 0, {
+  year = NaN,
+  month = NaN,
+  data = NaN
+}) {
+  if (type) {
+    if (month - 2 < 0) {
+      year -= 1
+      month = 12
+    } else {
+      month -= 2
+    }
+  } else if (type === 1) {
+    month -= 1
+  } else {
+    if (month >= 12) {
+      month = 1
+      year += 1
+    }
+
+  }
+
+  // 判断是否闰年
+  const isRYear = getLeapTwelveyears(year)
+  // 获取当前年对应月份天数
+  const currentMonths = monthsArr.value[Number(isRYear)]
+  // 获取当月1号是星期几
+  const weekDay = new Date(`${year}-${month > 10 ? month : "0" + month}-01`).getDay() || 7
+  // 获取当月有多少天
+  const monthDays = currentMonths[month - 1]
+  return {
+    isRYear,
+    currentMonths,
+    weekDay,
+    monthDays
+  }
 }
 
 /**
@@ -82,18 +128,10 @@ function renderCalendar(type = 1, options?: {
   const month = 1
   const date = options?.date || nowDay
 
-  // 判断是否闰年
-  const isRYear = getLeapTwelveyears(year)
-  // 获取当前年对应月份天数
-  const currentMonths = monthsArr.value[Number(isRYear)]
-  // 获取当月1号是星期几
-  const weekDay = new Date(`${year}-${month}-01`).getDay() || 7
-  // 获取当月有多少天
-  const monthDays = currentMonths[month - 1]
-  // 获取上一个月有多少天
-  const prevMonthDays = currentMonths[month - 2]
-  // 获取下一个月有多少天
-  const nextMonthDays = currentMonths[month]
+  // 获取当月信息
+  const currentInfo = getMonthInfo(1, { year, month })
+  // 获取上一个月信息
+  const prevInfo = getMonthInfo(0, { year, month })
   // 星期排布方式
   week.value = weekArr.slice(0 + type, 7 + type)
 
@@ -112,7 +150,7 @@ function renderCalendar(type = 1, options?: {
 
   dateArr.forEach((el, i) => {
     dateArr[i] = {
-      date: i,
+      date: 0,
       numI: (i % 7) + 1,
       zhI: week.value[i % 7].zhI,
       zhSI: week.value[i % 7].zhSI,
@@ -124,22 +162,30 @@ function renderCalendar(type = 1, options?: {
 
   // 切换当前日历
   dateArr.forEach((el, i) => {
-    if (i < weekDay - 1) {
-      if (!weekDay) {
-        el.date = prevMonthDays - (weekDay - 2 - i)
-      }
+    if (i < currentInfo.weekDay - 1) {
+      el.date = prevInfo.monthDays - (currentInfo.weekDay - 2 - i);
     }
-    else if (i >= weekDay - 1 && i < monthDays + weekDay - 1) {
+    else if (i >= currentInfo.weekDay - 1 && i < currentInfo.monthDays + currentInfo.weekDay - 1) {
       // 补全当前月日期
-      el.date = el.date - (weekDay - 2)
+      el.date = i - (currentInfo.weekDay - 2)
+      el.disabled = false
     }
     else {
-      el.date = (dateArr.length - (monthDays + weekDay - 1)) - (dateArr.length - i) + 1
+      el.date = (dateArr.length - (currentInfo.monthDays + currentInfo.weekDay - 1)) - (dateArr.length - i) + 1
     }
   })
-  calendarData.value = dateArr
+  calendarData!.value = {
+    year,
+    month,
+    date,
+    data: dateArr,
+  }
+  console.log("year=" + year);
+  console.log("month=" + month);
+  console.log("date=" + date);
+  console.log("monthDays=" + currentInfo.monthDays);
+  console.log("prevInfo.monthDays=" + prevInfo.monthDays);
   console.log(dateArr);
-  console.log("monthDays=" + monthDays, "prevMonthDays=" + prevMonthDays, "weekDay=" + weekDay, "preMonth=" + (month - 1), currentMonths[8]);
 
 }
 
@@ -149,11 +195,19 @@ onMounted(() => {
 </script>
 <template>
   <div class="calendar">
-    <section class="calendar-week">
-      <div class="calendar-week-item" v-for="item in week" :key="item.index">{{ item.zhSI }}</div>
+    <section class="calendar-header">
+      <div class="calendar-header-bar">
+        <div class="calendar-header-bar-icon calendar-header-bar-prev">👈</div>
+        <div class="calendar-header-bar-title">{{ calendarData?.year }}-{{ calendarData?.month }}</div>
+        <div class="calendar-header-bar-icon  calendar-header-bar-next">👉</div>
+      </div>
+      <div class="calendar-header-week">
+        <div class="calendar-header-week-item" v-for="item in week" :key="item.index">{{ item.zhSI }}</div>
+      </div>
     </section>
     <section class="calendar-content">
-      <div v-for="(item, i) in calendarData" :key="i" class="calendar-content-row-item">
+      <div v-for="(item, i) in calendarData?.data" :key="i"
+        :class="['calendar-content-row-item', { disabled: item.disabled }]">
         {{ item.date }}
       </div>
     </section>
@@ -163,15 +217,24 @@ onMounted(() => {
 <style lang="less" scoped>
 .calendar {
   max-width: 600px;
+  cursor: pointer;
 
-  &-week {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f2f2f2;
+  &-header {
+    &-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-    &-item {
-      width: 14.28571%;
+    &-week {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f2f2f2;
+
+      &-item {
+        width: 14.28571%;
+      }
     }
   }
 
@@ -183,7 +246,12 @@ onMounted(() => {
     &-row {
       &-item {
         width: 14.28571%;
+
+        &.disabled {
+          background: gray;
+        }
       }
+
     }
   }
 }
