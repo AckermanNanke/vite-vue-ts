@@ -46,12 +46,6 @@ const monthArr = [
   { enI: "December" },
 ];
 
-// 获取当前 年, 月, 日
-const nowDate = new Date()
-const nowYear = Number(nowDate.toJSON().substring(0, 4))
-const nowMonth = nowDate.toJSON().substring(5, 7)
-const nowDay = nowDate.toJSON().substring(6, 9)
-
 // 枚举月份天数
 const monthsArr = ref<number[][]>([
   [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
@@ -65,29 +59,30 @@ function getLeapTwelveyears(year: number): boolean {
 
 /**
  * 获取月的信息
- * @param type 上个月还是下个月   0-上个月 | 1-当月 | 2-下个月
- * @param param1 年月
+ * @param { Number } type  上个月还是下个月   0-上个月 | 1-当月 | 2-下个月
+ * @param { Number } param.year 年
+ * @param { Number } param.month 月
+ * @param { Number } param.year 日
  */
 function getMonthInfo(type = 0, {
   year = NaN,
   month = NaN,
   date = NaN
 }) {
-  if (type) {
-    if (month - 2 < 0) {
+  if (!type) {
+    if (month - 1 <= 0) {
       year -= 1
       month = 12
     } else {
-      month -= 2
+      month -= 1
     }
   } else if (type === 1) {
-    month -= 1
-  } else {
     if (month >= 12) {
       month = 1
       year += 1
+    } else {
+      month += 1
     }
-
   }
 
   // 判断是否闰年
@@ -95,13 +90,16 @@ function getMonthInfo(type = 0, {
   // 获取当前年对应月份天数
   const currentMonths = monthsArr.value[Number(isRYear)]
   // 获取当月1号是星期几
-  const weekDay = new Date(`${year}-${month > 10 ? month : "0" + month}-${date}`).getDay() || 7
+  const firstweekDay = new Date(`${year}-${month > 10 ? month : "0" + month}-01`).getDay() || 7
   // 获取当月有多少天
   const monthDays = currentMonths[month - 1]
   return {
+    year,
+    month,
+    date,
     isRYear,
     currentMonths,
-    weekDay,
+    firstweekDay,
     monthDays
   }
 }
@@ -123,15 +121,20 @@ function renderCalendar(type = 1, options?: {
   /**
    * 获取当前年，月，日
    */
+  const nowDate = new Date()
+  const nowYear = Number(nowDate.toJSON().substring(0, 4))
+  const nowMonth = nowDate.toJSON().substring(5, 7)
+  const nowDay = nowDate.toJSON().substring(8, 10)
+
   const year = options?.year || nowYear
-  // const month = options?.month || nowMonth
-  const month = 1
+  const month = options?.month || nowMonth
   const date = options?.date || nowDay
 
+
   // 获取当月信息
-  const currentInfo = getMonthInfo(1, { year, month })
+  const currentInfo = getMonthInfo(2, { year, month: month as number, date: date as number })
   // 获取上一个月信息
-  const prevInfo = getMonthInfo(0, { year, month })
+  const prevInfo = getMonthInfo(0, { year, month: month as number, date: date as number })
   // 星期排布方式
   week.value = weekArr.slice(0 + type, 7 + type)
 
@@ -162,30 +165,37 @@ function renderCalendar(type = 1, options?: {
 
   // 切换当前日历
   dateArr.forEach((el, i) => {
-    if (i < currentInfo.weekDay - 1) {
-      el.date = prevInfo.monthDays - (currentInfo.weekDay - 2 - i);
+    if (i < currentInfo.firstweekDay - 1) {
+      el.date = prevInfo.monthDays - (currentInfo.firstweekDay - 2 - i);
     }
-    else if (i >= currentInfo.weekDay - 1 && i < currentInfo.monthDays + currentInfo.weekDay - 1) {
+    else if (i >= currentInfo.firstweekDay - 1 && i < currentInfo.monthDays + currentInfo.firstweekDay - 1) {
       // 补全当前月日期
-      el.date = i - (currentInfo.weekDay - 2)
+      el.date = i - (currentInfo.firstweekDay - 2)
       el.disabled = false
     }
     else {
-      el.date = (dateArr.length - (currentInfo.monthDays + currentInfo.weekDay - 1)) - (dateArr.length - i) + 1
+      el.date = (dateArr.length - (currentInfo.monthDays + currentInfo.firstweekDay - 1)) - (dateArr.length - i) + 1
     }
   })
   calendarData!.value = {
     year,
-    month,
-    date,
+    month: month as number,
+    date: date as number,
     data: dateArr,
   }
-  console.log("year=" + year);
-  console.log("month=" + month);
-  console.log("date=" + date);
-  console.log("monthDays=" + currentInfo.monthDays);
-  console.log("prevInfo.monthDays=" + prevInfo.monthDays);
+  console.log("currentInfo=", currentInfo);
+  console.log("prevInfo=", prevInfo);
   console.log(dateArr);
+
+}
+
+/**
+ * 改变月份
+ * @param { Number } type 0 上月 | 1 下月
+ */
+function changeMonth(type: number) {
+  const { year, month, date } = calendarData.value!;
+  renderCalendar(1, getMonthInfo(type, { year, month, date }))
 
 }
 
@@ -197,9 +207,9 @@ onMounted(() => {
   <div class="calendar">
     <section class="calendar-header">
       <div class="calendar-header-bar">
-        <div class="calendar-header-bar-icon calendar-header-bar-prev">👈</div>
+        <div class="calendar-header-bar-icon calendar-header-bar-prev" @click="changeMonth(0)">👈</div>
         <div class="calendar-header-bar-title">{{ calendarData?.year }}-{{ calendarData?.month }}</div>
-        <div class="calendar-header-bar-icon  calendar-header-bar-next">👉</div>
+        <div class="calendar-header-bar-icon  calendar-header-bar-next" @click="changeMonth(1)">👉</div>
       </div>
       <div class="calendar-header-week">
         <div class="calendar-header-week-item" v-for="item in week" :key="item.index">{{ item.zhSI }}</div>
