@@ -131,9 +131,9 @@ export class calendar {
     // 获取当月有多少天
     const monthDays = currentMonths[intMonth - 1];
     return {
-      Date: `${year}-${month}-${date}`,
-      year,
-      month,
+      dateStr: `${intYear}-${intMonth > 10 ? month : "0" + month}-${date}`,
+      year: `${intYear}`,
+      month: `${intMonth}`,
       date,
       isRYear,
       currentMonths,
@@ -147,14 +147,14 @@ export class calendar {
    * @param type 日历类型 1 周一在前面 | 0 周末在前面
    * @param dateStr 渲染日历用日期字符串，如果使用传参的话年月日必须同时传
    */
-  renderCalendar(options: { dateStr?: string }) {
-    if (options.dateStr) {
-      if (typeof options.dateStr !== "string") {
+  renderCalendar({ dateStr = undefined || "" }) {
+    if (dateStr) {
+      if (typeof dateStr !== "string") {
         throw new Error(`参数必须为字符串格式`);
-      } else if (options.dateStr.length <= 10) {
+      } else if (dateStr.length <= 10) {
         throw new Error(`参数格式必须是一个表示某个日期的字符串`);
-      } else if (isNaN(Date.parse(options.dateStr))) {
-        throw new Error(`参数必须包含年月日，当前传参为${options.dateStr} `);
+      } else if (isNaN(Date.parse(dateStr))) {
+        throw new Error(`参数必须包含年月日，当前传参为${dateStr} `);
       }
     }
 
@@ -163,12 +163,9 @@ export class calendar {
      */
     const nowDate = new Date();
 
-    const year =
-      options.dateStr!.substring(0, 4) || nowDate.toJSON().substring(0, 4);
-    const month =
-      options.dateStr!.substring(5, 7) || nowDate.toJSON().substring(5, 7);
-    const date =
-      options.dateStr!.substring(8) || nowDate.toJSON().substring(8, 10);
+    const year = dateStr!.substring(0, 4) || nowDate.toJSON().substring(0, 4);
+    const month = dateStr!.substring(5, 7) || nowDate.toJSON().substring(5, 7);
+    const date = dateStr!.substring(8) || nowDate.toJSON().substring(8, 10);
 
     // 获取当月信息
     const currentInfo = this.getMonthInfo(2, {
@@ -228,9 +225,9 @@ export class calendar {
       }
     });
     this.calendarData = {
-      year: year.toString(),
-      month: month as string,
-      date: date as string,
+      year,
+      month,
+      date,
       data: dateArr,
     };
     console.log("class_calendarData");
@@ -244,7 +241,7 @@ export class calendar {
    */
   changeMonth(type: number) {
     const { year, month, date } = this.calendarData;
-    const { Date } = this.getMonthInfo(type, { year, month, date });
-    this.renderCalendar({ dateStr: Date });
+    const { dateStr } = this.getMonthInfo(type, { year, month, date });
+    this.renderCalendar({ dateStr });
   }
 }
