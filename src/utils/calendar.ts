@@ -1,50 +1,46 @@
 /**
- * 类构造后日历数据类型
- */
-type calendarDataType = {
-  year: string;
-  month: string;
-  date: string;
-  data: any[];
-};
-/**
  * 周名称类型
  */
 type weekType = {
-  zhI: String;
-  zhSI: String;
-  enI: String;
-  enSI: String;
+  zhI: string;
+  zhSI: string;
+  enI: string;
+  enSI: string;
 };
 /**
  * 月名称类型
  */
 type monthType = {
-  enNanme: String;
-  zhNanme: String;
-  zhLunarNanme: String;
+  enNanme: string;
+  zhNanme: string;
+  zhLunarNanme: string;
+};
+type monthlyCalendarDataType = weekType & {
+  date: string;
+  numI: number;
+  disabled: boolean;
+};
+/**
+ * 类构造后日历数据类型
+ */
+type calendarDataType = {
+  year: string; //年
+  month: string; //月
+  date: string; //日
+  monthlyCalendarData: Array<monthlyCalendarDataType>; //月历
+  dateStr?: string; //日期字符串
+  isRYear?: boolean; //是否闰年
+  firstweekDay?: number; //当月第一天是星期几
+  weekData?: Array<weekType>; //日期字符串
 };
 /**
  * 日历类组件
  */
 export class calendar {
   /**
-   * 日历周数组
-   */
-  week: Array<weekType> = [{ zhI: "", zhSI: "", enI: "", enSI: "" }];
-  /**
-   * 日历列表
-   */
-  calendarData: calendarDataType = {
-    year: "",
-    month: "",
-    date: "",
-    data: [],
-  };
-  /**
    * 周的所有星期名称列表 周日结尾 | 周一结尾
    */
-  weekArr: Array<weekType> = [
+  weekNameArr: Array<weekType> = [
     { zhI: "周日", zhSI: "日", enI: "Sunday", enSI: "Sunday" },
     { zhI: "周一", zhSI: "一", enI: "Monday", enSI: "Monday" },
     { zhI: "周二", zhSI: "二", enI: "Tueday", enSI: "Tueday" },
@@ -57,7 +53,7 @@ export class calendar {
   /**
    * 月份名称列表
    */
-  monthArr: Array<monthType> = [
+  monthNameArr: Array<monthType> = [
     { enNanme: "January", zhNanme: "一月", zhLunarNanme: "January" },
     { enNanme: "February", zhNanme: "二月", zhLunarNanme: "February" },
     { enNanme: "March", zhNanme: "三月", zhLunarNanme: "March" },
@@ -71,15 +67,32 @@ export class calendar {
     { enNanme: "November", zhNanme: "十一月", zhLunarNanme: "November" },
     { enNanme: "December", zhNanme: "十二月", zhLunarNanme: "December" },
   ];
-  // 平年，闰年月份天数
-  monthsArr = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
+  monthsDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; //平年，闰年月份天数
+  weekData: Array<weekType> = [{ zhI: "", zhSI: "", enI: "", enSI: "" }]; //日历周数组
+  year = ""; //年
+  month = ""; //月
+  date = ""; //日
+  dateStr = ""; //日期字符串
+  isRYear = false; //是否闰年
+  firstweekDay = 0; //当月第一天是星期几
+  monthlyCalendarData: Array<monthlyCalendarDataType> = []; //月历
+
+  /**
+   * 日历列表
+   */
+  calendarData: calendarDataType = {
+    year: "",
+    month: "",
+    date: "",
+    monthlyCalendarData: [],
+  };
   /**
    *  初始化类，调用日历渲染函数
    * @param dateStr 渲染日历用日期字符串，如果使用传参的话年月日必须同时传
    */
-  constructor(options: { dateStr?: string }) {
-    this.renderCalendar(options);
+  constructor(dateStr = "" || undefined) {
+    this.renderCalendar(dateStr);
   }
 
   /**
@@ -90,7 +103,7 @@ export class calendar {
   getLeapTwelveyears(year: number): boolean {
     const leapTwelveyears =
       (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    this.monthsArr[1] = leapTwelveyears ? 29 : 28;
+    this.monthsDays[1] = leapTwelveyears ? 29 : 28;
     return leapTwelveyears;
   }
 
@@ -121,22 +134,19 @@ export class calendar {
     }
     // 判断是否闰年
     const isRYear = this.getLeapTwelveyears(intYear);
-    // 获取当前年对应月份天数
-    const currentMonths = this.monthsArr;
     // 获取当月1号是星期几
     const firstweekDay =
       new Date(
         `${intYear}-${intMonth > 10 ? month : "0" + month}-01`
       ).getDay() || 7;
     // 获取当月有多少天
-    const monthDays = currentMonths[intMonth - 1];
+    const monthDays = this.monthsDays[intMonth - 1];
     return {
       dateStr: `${intYear}-${intMonth > 10 ? month : "0" + month}-${date}`,
       year: `${intYear}`,
       month: `${intMonth}`,
       date,
       isRYear,
-      currentMonths,
       firstweekDay,
       monthDays,
     };
@@ -147,7 +157,7 @@ export class calendar {
    * @param type 日历类型 1 周一在前面 | 0 周末在前面
    * @param dateStr 渲染日历用日期字符串，如果使用传参的话年月日必须同时传
    */
-  renderCalendar({ dateStr = undefined || "" }) {
+  renderCalendar(dateStr = undefined || "") {
     if (dateStr) {
       if (typeof dateStr !== "string") {
         throw new Error(`参数必须为字符串格式`);
@@ -162,7 +172,6 @@ export class calendar {
      * 获取当前年，月，日
      */
     const nowDate = new Date();
-
     const year = dateStr!.substring(0, 4) || nowDate.toJSON().substring(0, 4);
     const month = dateStr!.substring(5, 7) || nowDate.toJSON().substring(5, 7);
     const date = dateStr!.substring(8) || nowDate.toJSON().substring(8, 10);
@@ -180,55 +189,45 @@ export class calendar {
       date,
     });
     // 星期排布方式
-    this.week = this.weekArr.slice(1, 8);
+    this.weekData = this.weekNameArr.slice(1, 8);
 
-    // 初始化日历日期
-    let dateArr: any[] = new Array(42).fill({
-      date: 0,
-      numI: 0,
-      zhI: "",
-      zhSI: "",
-      enI: "",
-      enSI: "",
-      disabled: true,
-    });
-
-    dateArr.forEach((el, i) => {
-      dateArr[i] = {
-        date: 0,
+    let monthlyCalendarData = new Array<monthlyCalendarDataType>(42);
+    monthlyCalendarData.forEach((_, i) => {
+      monthlyCalendarData[i] = {
+        date: "",
         numI: (i % 7) + 1,
-        zhI: this.week[i % 7].zhI,
-        zhSI: this.week[i % 7].zhSI,
-        enI: this.week[i % 7].enI,
-        enSI: this.week[i % 7].enSI,
+        zhI: this.weekData[i % 7].zhI,
+        zhSI: this.weekData[i % 7].zhSI,
+        enI: this.weekData[i % 7].enI,
+        enSI: this.weekData[i % 7].enSI,
         disabled: true,
       };
     });
 
     // 切换当前日历
-    dateArr.forEach((el, i) => {
+    monthlyCalendarData.forEach((el, i) => {
+      let l = monthlyCalendarData.length;
       if (i < currentInfo.firstweekDay - 1) {
-        el.date = prevInfo.monthDays - (currentInfo.firstweekDay - 2 - i);
+        el.date = `${prevInfo.monthDays - (currentInfo.firstweekDay - 2 - i)}`;
       } else if (
         i >= currentInfo.firstweekDay - 1 &&
         i < currentInfo.monthDays + currentInfo.firstweekDay - 1
       ) {
         // 补全当前月日期
-        el.date = i - (currentInfo.firstweekDay - 2);
+        el.date = `${i - (currentInfo.firstweekDay - 2)}`;
         el.disabled = false;
       } else {
-        el.date =
-          dateArr.length -
+        el.date = `${
+          l -
           (currentInfo.monthDays + currentInfo.firstweekDay - 1) -
-          (dateArr.length - i) +
-          1;
+          (l - i) +
+          1
+        }`;
       }
     });
     this.calendarData = {
-      year,
-      month,
-      date,
-      data: dateArr,
+      ...currentInfo,
+      monthlyCalendarData,
     };
     console.log("class_calendarData");
     console.log(this.calendarData);
