@@ -1,27 +1,29 @@
 <script setup lang="ts">
-import { calendar } from "@utils/calendar";
+import { Calendar } from "@utils/calendar";
 import { onMounted, ref } from "vue";
 
-const Calendar = ref<calendar>();
+const calendar = ref<Calendar>();
 
 onMounted(() => {
-  Calendar.value = new calendar()
+  calendar.value = new Calendar();
+  console.log(calendar);
+
 })
 </script>
 <template>
   <div class="calendar">
     <section class="calendar-header">
       <div class="calendar-header-bar">
-        <div class="calendar-header-bar-icon calendar-header-bar-prev" @click="Calendar!.changeMonth(0)">👈</div>
-        <div class="calendar-header-bar-title">{{ Calendar!.calendarData.year }}-{{ Calendar!.calendarData.month }}</div>
-        <div class="calendar-header-bar-icon  calendar-header-bar-next" @click="Calendar!.changeMonth(1)">👉</div>
+        <div class="calendar-header-bar-icon calendar-header-bar-prev" @click="calendar?.changeMonth(0)">👈</div>
+        <div class="calendar-header-bar-title">{{ calendar?.year }}-{{ calendar?.month }}</div>
+        <div class="calendar-header-bar-icon  calendar-header-bar-next" @click="calendar?.changeMonth(1)">👉</div>
       </div>
       <div class="calendar-header-week">
-        <div class="calendar-header-week-item" v-for="item in Calendar!.weekData" :key="item.enI">{{ item.zhSI }}</div>
+        <div class="calendar-header-week-item" v-for="item in calendar?.weekData" :key="item.enI">{{ item.zhSI }}</div>
       </div>
     </section>
     <section class="calendar-content">
-      <div v-for="(item, i) in Calendar!.calendarData?.data" :key="i"
+      <div v-for="(item, i) in calendar?.monthlyCalendarData || []" :key="i"
         :class="['calendar-content-row-item', { disabled: item.disabled }]">
         {{ item.date }}
       </div>
