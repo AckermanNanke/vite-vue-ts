@@ -21,7 +21,8 @@ type MonthType = {
 type MonthlyCalendarDataItemType = WeekItemType & {
   date: string;
   numI: number;
-  disabled: boolean;
+  disabled?: boolean;
+  active?: boolean;
 };
 /**
  * 类构造后日历数据类型
@@ -167,7 +168,6 @@ export class Calendar {
       zhSI: "",
       enI: "",
       enSI: "",
-      disabled: true,
     });
     monthlyCalendarData.forEach((_, i) => {
       monthlyCalendarData[i] = {
@@ -177,7 +177,6 @@ export class Calendar {
         zhSI: weekData[i % 7].zhSI,
         enI: weekData[i % 7].enI,
         enSI: weekData[i % 7].enSI,
-        disabled: true,
       };
     });
     monthlyCalendarData.forEach((el, i) => {
@@ -186,13 +185,13 @@ export class Calendar {
         el.date = `${
           prevMonthInfo.monthDays - (currentInfo.firstweekDay - 2 - i)
         }`;
+        el.disabled = true;
       } else if (
         i >= currentInfo.firstweekDay - 1 &&
         i < currentInfo.monthDays + currentInfo.firstweekDay - 1
       ) {
         // 补全当前月日期
         el.date = `${i - (currentInfo.firstweekDay - 2)}`;
-        el.disabled = false;
       } else {
         el.date = `${
           l -
@@ -200,6 +199,10 @@ export class Calendar {
           (l - i) +
           1
         }`;
+        el.disabled = true;
+      }
+      if (el.date === currentInfo.date) {
+        el.active = true;
       }
     });
     return monthlyCalendarData;

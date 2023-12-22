@@ -138,6 +138,7 @@ onMounted(() => { });
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
+  cursor: pointer;
 
   &-loading {
     background: #f5f5f5;

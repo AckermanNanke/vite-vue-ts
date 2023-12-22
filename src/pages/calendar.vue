@@ -24,7 +24,7 @@ onMounted(() => {
     </section>
     <section class="calendar-content">
       <div v-for="(item, i) in calendar?.monthlyCalendarData || []" :key="i"
-        :class="['calendar-content-row-item', { disabled: item.disabled }]">
+        :class="['calendar-content-row-item', { disabled: item.disabled }, { active: item.active }]">
         {{ item.date }}
       </div>
     </section>
@@ -33,7 +33,11 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .calendar {
-  max-width: 600px;
+  max-width: 400px;
+  text-align: center;
+  background: #303030;
+  color: #ffffff;
+  line-height: 2em;
   cursor: pointer;
 
   &-header {
@@ -41,16 +45,19 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      &-icon {
+        min-width: 14.28571%;
+      }
     }
 
     &-week {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #f2f2f2;
 
       &-item {
-        width: 14.28571%;
+        flex: 1;
       }
     }
   }
@@ -62,10 +69,15 @@ onMounted(() => {
 
     &-row {
       &-item {
-        width: 14.28571%;
+        flex: 1;
+        min-width: 14.28571%;
 
         &.disabled {
-          background: gray;
+          opacity: .6;
+        }
+
+        &.active {
+          background: rgba(255, 255, 255, .2);
         }
       }
 
