@@ -3,26 +3,26 @@ import { faceH5 } from "@utils/faceH5";
 import { onMounted, ref } from "vue";
 
 const faceDemo = ref<faceH5>();
-const faceEl = ref();
+const faceEl = ref<HTMLVideoElement>();
 
 /**
  * 开始录制
  */
 function start() {
-  faceDemo.value!.startRecord()
+  faceDemo.value!.startRecord();
 }
 /**
  * 结束录制
  */
 function stop() {
-  faceDemo.value!.stopRecord().then(res => {
-    console.log(res)
-  })
+  faceDemo.value!.stopRecord().then((res) => {
+    console.log(res);
+  });
 }
 
 onMounted(() => {
-  faceDemo.value = new faceH5({ videoEl: faceEl.value })
-})
+  faceDemo.value = new faceH5({ videoEl: faceEl.value! });
+});
 </script>
 <template>
   <video ref="faceEl" class="face"></video>

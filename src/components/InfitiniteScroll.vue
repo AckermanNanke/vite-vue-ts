@@ -22,7 +22,6 @@ const emit = defineEmits<{
   (e: "pullDown", el: emitType): void;
 }>();
 
-
 const noMoreData = ref(false); //是否没有数据了
 const upLoading = ref(false); //是否加载中
 const downLoading = ref(false); //是否刷新中
@@ -37,13 +36,12 @@ const TEParams = ref<TouchEvent | undefined>(); //保存结束时触摸位置
 const UpLoadingTips = computed(() => {
   if (!upLoading.value) {
     if (noMoreData.value) {
-      return "我已经到底线了"
-
+      return "我已经到底线了";
     } else {
-      return "上拉加载更多数据"
+      return "上拉加载更多数据";
     }
   }
-})
+});
 
 /**
  * 触摸开始事件
@@ -51,7 +49,7 @@ const UpLoadingTips = computed(() => {
 const touchstart = throttle((e: TouchEvent) => {
   if (upLoading.value || downLoading.value) return false;
   TSParams.value = e;
-}, props.delay)
+}, props.delay);
 
 /**
  * 触摸结束事件
@@ -61,7 +59,9 @@ const touchend = throttle((e: TouchEvent) => {
   TEParams.value = e;
   const Y =
     TEParams.value!.changedTouches[0]?.pageY - TSParams.value!.touches[0].pageY; // 垂直移动距离
-  const scrollY = scrollEl.value!.scrollHeight; //可滚动区域的高度
+
+  console.log(TEParams);
+  console.log(Y);
 
   // 下拉刷新
   if (Y - props.distance >= 0) {
@@ -79,8 +79,8 @@ const touchend = throttle((e: TouchEvent) => {
   if (
     Math.abs(
       scrollEl.value!.scrollHeight -
-      scrollEl.value!.clientHeight -
-      scrollEl.value!.scrollTop
+        scrollEl.value!.clientHeight -
+        scrollEl.value!.scrollTop
     ) < props.distance
   ) {
     if (-Y >= props.distance) {
@@ -91,7 +91,7 @@ const touchend = throttle((e: TouchEvent) => {
       });
     }
   }
-}, props.delay)
+}, props.delay);
 
 // 触摸移动事件
 function touchmove(e: TouchEvent) {
@@ -109,17 +109,25 @@ function loadEnd() {
  * 加载完成
  */
 function completed() {
-  noMoreData.value = true
+  noMoreData.value = true;
 }
 
-onMounted(() => { });
+onMounted(() => {});
 </script>
 
 <template>
-  <section class="f-infitinite-scroll" ref="scrollEl" @touchstart="touchstart" @touchend="touchend"
-    @touchmove="touchmove">
+  <section
+    class="f-infitinite-scroll"
+    ref="scrollEl"
+    @touchstart.passive.stop="touchstart"
+    @touchend.passive.stop="touchend"
+    @touchmove.passive.stop="touchmove"
+  >
     <slot name="refresh">
-      <div class="f-infitinite-scroll-loading f-flex f-align-center" :class="{ active: downLoading }">
+      <div
+        class="f-infitinite-scroll-loading f-flex f-align-center"
+        :class="{ active: downLoading }"
+      >
         <LoadingIcon name="circle-plain" v-if="downLoading" />
       </div>
     </slot>
@@ -134,11 +142,11 @@ onMounted(() => { });
 </template>
 <style lang="less" scoped>
 .f-infitinite-scroll {
+  touch-action: none;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
-  cursor: pointer;
 
   &-loading {
     background: #f5f5f5;
@@ -151,7 +159,7 @@ onMounted(() => { });
     text-align: center;
     overflow: hidden;
     height: 0;
-    transition: height cubic-bezier(0.18, 0.89, 0.32, 1.28) 0.8s;
+    transition: height cubic-bezier(0.18, 0.89, 0.32, 1.28) 0.4s;
   }
 }
 </style>

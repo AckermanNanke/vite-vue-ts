@@ -12,8 +12,7 @@ export const app = createApp(App);
 app.use(router).use(plugin).mount("#app");
 
 if (!import.meta.env.PROD) {
-  console.log("构建信息");
+  console.log("初始化信息");
   console.log(import.meta.env);
-  console.log(app);
-  console.log("构建信息");
+  console.log("初始化信息");
 }

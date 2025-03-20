@@ -29,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/calendar",
     component: () => import("/src/pages/calendar.vue"),
   },
+  {
+    name: "webGL",
+    path: "/webGL",
+    component: () => import("/src/pages/webGL.vue"),
+  },
 ];
 const router = createRouter({
   history: createWebHashHistory(),
