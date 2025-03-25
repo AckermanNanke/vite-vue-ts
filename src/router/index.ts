@@ -32,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: "webGL",
     path: "/webGL",
-    component: () => import("/src/pages/webGL.vue"),
+    component: () => import("/src/pages/webGL/webGL.vue"),
   },
 ];
 const router = createRouter({
